@@ -1,0 +1,2 @@
+# pink-project
+For fun.
