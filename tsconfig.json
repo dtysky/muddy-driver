@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "sourceMap": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "removeComments": false,
+    "target": "es5",
+    "jsx": "react",
+    "lib": ["es2015", "dom"],
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "spec/**/*.ts"
+  ]
+}
