@@ -12,8 +12,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 
-const outPath = path.resolve(__dirname, 'dist');
-const phaserModule = path.join(__dirname, './node_modules/phaser-ce/');
+const outPath = path.resolve(__dirname, '../public');
+const phaserModule = path.join(__dirname, '../node_modules/phaser-ce/');
 const phaser = path.join(phaserModule, 'build/custom/phaser-split.js');
 const pixi = path.join(phaserModule, 'build/custom/pixi.js');
 const p2 = path.join(phaserModule, 'build/custom/p2.js');
@@ -28,7 +28,6 @@ module.exports = {
   output: {
     path: outPath,
     filename: 'assets/[name].[hash].js',
-    chunkFilename: 'assets/[name].chunk.[hash].js',
     publicPath: '/'
   },
 

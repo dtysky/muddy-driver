@@ -22,7 +22,7 @@ class App extends React.Component<IPropTypes, IStateTypes> {
     return (
       <div>
         Hello world
-        <img src="/assets/test.png" />
+        <img src={require('../assets/test.png')} />
       </div>
     );
   }

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "sourceMap": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "removeComments": false,
     "target": "es5",
@@ -11,7 +11,9 @@
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*.ts",
-    "spec/**/*.ts"
+    "client/**/*.ts",
+    "client/**/*.tsx",
+    "server/**/*.ts",
+    "./test.ts"
   ]
 }
