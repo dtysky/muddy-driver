@@ -83,12 +83,14 @@
     "device-orientation-manager": "^0.8.0",
     "es6-object-assign": "^1.1.0",
     "express-ws": "^4.0.0",
+    "json5": "^1.0.1",
     "oimo": "^1.0.9",
     "qs": "^6.5.1",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "source-list-map": "^2.0.0",
     "ts-node": "^7.0.0"
   }
 }

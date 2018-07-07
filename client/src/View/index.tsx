@@ -11,6 +11,7 @@ import 'cannon';
 
 import Player from './Player';
 import config from '../config';
+import { WSAECANCELLED } from 'constants';
 
 interface IPropTypes {
 
@@ -58,10 +59,10 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     scene.clearColor = new BABYLON.Color4(0, 0, 0);
 
     await this.initEnv();
+    this.initPhysics();
     this.initPlayer();
     this.initLights();
     this.initCameras();
-    this.initPhysics();
     // this.initAnimations();
     // this.initSounds();
     // this.initHUD();
@@ -95,6 +96,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
       const ground = BABYLON.Mesh.CreatePlane('ground', 100, this.scene);
       const material = new BABYLON.StandardMaterial('ground-material', this.scene);
       material.diffuseTexture = new BABYLON.Texture('assets/ground.jpg', this.scene);
+      material.ambientColor = new BABYLON.Color3(1, 1, 1);
       ground.material = material;
       ground.rotation.x = Math.PI / 2;
 
@@ -123,8 +125,10 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private initLights() {
     const {scene} = this;
 
-    const hemisphericLight = new BABYLON.HemisphericLight('hemisphericLight', new BABYLON.Vector3(1, 1, 1), scene);
-    hemisphericLight.intensity = 2;
+    scene.ambientColor = new BABYLON.Color3(1, 1, 1);
+
+    // const hemisphericLight = new BABYLON.HemisphericLight('hemisphericLight', new BABYLON.Vector3(1, 1, 1), scene);
+    // hemisphericLight.intensity = 2;
   }
 
   private initCameras() {
@@ -134,14 +138,14 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     camera.attachControl(container.current, true);
 
     const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
-    followCamera.radius = -60;
+    followCamera.radius = -20;
     followCamera.heightOffset = 10;
     followCamera.rotationOffset = 0;
     followCamera.maxCameraSpeed = 10;
     followCamera.attachControl(container.current, true);
     followCamera.lockedTarget = this.scene.getMeshByName('body');
 
-    scene.activeCamera = camera;
+    scene.activeCamera = followCamera;
   }
 
   private initPhysics() {
@@ -284,6 +288,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   // }
 
   private update() {
+    // this.mainPlayer.translate(this.mainPlayer.forward, -0.1, BABYLON.Space.WORLD);
   }
 
   private loop = () => {
