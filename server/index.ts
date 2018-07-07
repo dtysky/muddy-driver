@@ -115,7 +115,7 @@ app.ws('/room/:id/:role', (ws, req) => {
     room.ready[role] = false;
     room.alive = false;
 
-    wsMaster.send({type: 'rooms', value: rooms});
+    wsMaster.send(JSON.stringify({type: 'rooms', value: rooms}));
   });
 
   ws.on('error', error => {

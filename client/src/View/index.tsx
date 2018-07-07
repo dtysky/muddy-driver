@@ -49,8 +49,21 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   }
 
   private initEnv() {
+    const skybox = BABYLON.MeshBuilder.CreateBox('skybox', {size: 100}, this.scene);
+    const skyboxMaterial = new BABYLON.StandardMaterial('skybox-material', this.scene);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.disableLighting = true;
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('assets/long-shot/', this.scene);
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skybox.material = skyboxMaterial;
+    skybox.position.y = 49;
+    // skybox.infiniteDistance = true;
+
     const plane = BABYLON.Mesh.CreatePlane('ground', 100, this.scene);
-    let material = new BABYLON.StandardMaterial('ground-material', this.scene);
+    const material = new BABYLON.StandardMaterial('ground-material', this.scene);
     material.diffuseTexture = new BABYLON.Texture('assets/ground.jpg', this.scene);
     plane.material = material;
     plane.rotation.x = Math.PI / 2;
@@ -70,7 +83,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private initCameras() {
     const {scene, container} = this;
 
-    const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 100, new BABYLON.Vector3(0, 0, 0), scene);
+    const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 10, new BABYLON.Vector3(0, 0, 0), scene);
     camera.attachControl(container.current, true);
 
     // const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
