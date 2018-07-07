@@ -6,7 +6,7 @@
  */
 import * as React from 'react';
 import * as BABYLON from 'babylonjs';
-import 'babylonjs-loaders';
+import 'babylonjs-gui';
 
 interface IPropTypes {
 
@@ -33,8 +33,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
 
     this.initEnv();
     this.initPlayer();
-    this.initLights();
-    this.initCameras();
+    // this.initLights();
+    // this.initCameras();
     // this.initAnimations();
     // this.initSounds();
     // this.initHUD();
@@ -53,40 +53,40 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   }
 
   private initPlayer() {
-    
+
   }
 
-  private initLights() {
-    const {scene, cat} = this;
+  // private initLights() {
+  //   const {scene, cat} = this;
 
-    const directionalLight =  new BABYLON.DirectionalLight('directionalLight', new BABYLON.Vector3(-2, -2, 1), scene);
-    directionalLight.intensity = 2;
-    directionalLight.shadowEnabled = true;
+  //   const directionalLight =  new BABYLON.DirectionalLight('directionalLight', new BABYLON.Vector3(-2, -2, 1), scene);
+  //   directionalLight.intensity = 2;
+  //   directionalLight.shadowEnabled = true;
 
-    const shadowGenerator = new BABYLON.ShadowGenerator(1024, directionalLight);
-    scene.meshes.forEach(mesh => {
-      if (/^node_/.test(mesh.name)) {
-        shadowGenerator.addShadowCaster(mesh);
-      }
-    });
-  }
+  //   const shadowGenerator = new BABYLON.ShadowGenerator(1024, directionalLight);
+  //   scene.meshes.forEach(mesh => {
+  //     if (/^node_/.test(mesh.name)) {
+  //       shadowGenerator.addShadowCaster(mesh);
+  //     }
+  //   });
+  // }
 
-  private initCameras() {
-    const {scene, container} = this;
+  // private initCameras() {
+  //   const {scene, container} = this;
 
-    const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 1, new BABYLON.Vector3(-5, 10, -36), scene);
-    camera.attachControl(container.current, true);
+  //   const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 1, new BABYLON.Vector3(-5, 10, -36), scene);
+  //   camera.attachControl(container.current, true);
 
-    const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
-    followCamera.radius = 20;
-    followCamera.heightOffset = 10;
-    followCamera.rotationOffset = 0;
-    followCamera.maxCameraSpeed = 10;
-    followCamera.attachControl(container.current, true);
-    followCamera.lockedTarget = cat;
+  //   const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
+  //   followCamera.radius = 20;
+  //   followCamera.heightOffset = 10;
+  //   followCamera.rotationOffset = 0;
+  //   followCamera.maxCameraSpeed = 10;
+  //   followCamera.attachControl(container.current, true);
+  //   followCamera.lockedTarget = cat;
 
-    scene.activeCamera = camera;
-  }
+  //   scene.activeCamera = camera;
+  // }
 
   // private initSounds() {
   //   const {scene} = this;
