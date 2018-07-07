@@ -12,6 +12,7 @@ import axios from 'axios';
 
 import HandleBar from './handlebar';
 import Pedal from './pedal';
+import config from '../config';
 
 interface IPropTypes extends RouteComponentProps<{roomId}> {
 
@@ -28,7 +29,8 @@ class Controller extends React.Component<IPropTypes, IStateTypes> {
   };
   public async componentDidMount() {
     const roomId = this.props.match.params.roomId;
-    const url = '192.168.43.102:4444';
+    alert(roomId);
+    const url = config.url;
     const roomRes = (await axios.get<{
       code: number,
       message: string,

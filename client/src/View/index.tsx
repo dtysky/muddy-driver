@@ -7,6 +7,8 @@
 import * as React from 'react';
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-gui';
+import Player from './Player';
+import config from '../config';
 
 interface IPropTypes {
 
@@ -21,7 +23,27 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private engine: BABYLON.Engine;
   private scene: BABYLON.Scene;
 
+  private mainPlayer;
+  private ws;
   public async componentDidMount() {
+    const url = config.url;
+    this.ws = new WebSocket(`ws://${url}/master`);
+    this.ws.onopen = () => {
+      this.ws.send(JSON.stringify({type: 'init'}));
+    };
+    this.ws.onmessage = (res) => {
+      const data = JSON.parse(res.data);
+      if (data.type !== 'control') {
+        return;
+      }
+      const { role, id, value } = data.value;
+      if (role === 'wheel') {
+        this.mainPlayer.translate(this.mainPlayer.forward, value / 20, BABYLON.Space.WORLD);
+      } else {
+        this.mainPlayer.rotation.y += value;
+      }
+    };
+
     const canvas = this.container.current;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -57,7 +79,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   }
 
   private initPlayer() {
-
+    new Player(this.scene);
+    this.mainPlayer = this.scene.getMeshByName('body');
   }
 
   private initLights() {
@@ -73,15 +96,15 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 100, new BABYLON.Vector3(0, 0, 0), scene);
     camera.attachControl(container.current, true);
 
-    // const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
-    // followCamera.radius = 20;
-    // followCamera.heightOffset = 10;
-    // followCamera.rotationOffset = 0;
-    // followCamera.maxCameraSpeed = 10;
-    // followCamera.attachControl(container.current, true);
-    // followCamera.lockedTarget = cat;
+    const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
+    followCamera.radius = -60;
+    followCamera.heightOffset = 10;
+    followCamera.rotationOffset = 0;
+    followCamera.maxCameraSpeed = 10;
+    followCamera.attachControl(container.current, true);
+    followCamera.lockedTarget = this.scene.getMeshByName('body');
 
-    scene.activeCamera = camera;
+    scene.activeCamera = followCamera;
   }
 
   // private initSounds() {
