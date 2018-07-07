@@ -26,8 +26,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private engine: BABYLON.Engine;
   private scene: BABYLON.Scene;
   private groundCollision: BABYLON.Mesh;
+  private players = {};
 
-  private mainPlayer;
   private ws;
 
   public async componentDidMount() {
@@ -43,9 +43,9 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
       }
       const { role, id, value } = data.value;
       if (role === 'wheel') {
-        this.mainPlayer.translate(this.mainPlayer.forward, value / 20, BABYLON.Space.WORLD);
+        this.players[id].translate(this.players[id].forward, value / 20, BABYLON.Space.WORLD);
       } else {
-        this.mainPlayer.rotation.y += value;
+        this.players[id].rotation.y += value;
       }
     };
 
@@ -79,18 +79,16 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private initEnv() {
     const {scene} = this;
 
-    // const skybox = BABYLON.MeshBuilder.CreateBox('skybox', {size: 100}, this.scene);
-    // const skyboxMaterial = new BABYLON.StandardMaterial('skybox-material', this.scene);
-    // skyboxMaterial.backFaceCulling = false;
-    // skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    // skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-    // skyboxMaterial.backFaceCulling = false;
-    // skyboxMaterial.disableLighting = true;
-    // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('assets/long-shot/', this.scene);
-    // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-    // skybox.material = skyboxMaterial;
-    // skybox.position.y = 49;
-    // skybox.infiniteDistance = true;
+    const skybox = BABYLON.MeshBuilder.CreateBox('skybox', {size: 150}, this.scene);
+    const skyboxMaterial = new BABYLON.StandardMaterial('skybox-material', this.scene);
+    skyboxMaterial.ambientColor = new BABYLON.Color3(1, 1, 1);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.disableLighting = true;
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('assets/long-shot/', this.scene);
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skybox.material = skyboxMaterial;
+    skybox.position.y = 0;
+    skybox.infiniteDistance = true;
 
     return new Promise(resolve => {
       const ground = BABYLON.Mesh.CreatePlane('ground', 100, this.scene);
@@ -118,8 +116,14 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   }
 
   private initPlayer() {
-    new Player(this.scene);
-    this.mainPlayer = this.scene.getMeshByName('body');
+    this.players[1] = new Player(this.container, this.scene, [0, 3, 15]);
+    this.players[2] = new Player(this.container, this.scene, [0, 3, 12]);
+
+    this.scene.activeCameras.push(this.players[1].followCamera);
+    this.scene.activeCameras.push(this.players[2].followCamera);
+
+    this.players[1].followCamera.viewport = new BABYLON.Viewport(0.501, 0, 0.501, 1.0);
+    this.players[2].followCamera.viewport = new BABYLON.Viewport(0, 0, 0.499, 1.0);
   }
 
   private initLights() {
@@ -136,16 +140,6 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
 
     const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 10, new BABYLON.Vector3(0, 0, 0), scene);
     camera.attachControl(container.current, true);
-
-    const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
-    followCamera.radius = -20;
-    followCamera.heightOffset = 10;
-    followCamera.rotationOffset = 0;
-    followCamera.maxCameraSpeed = 10;
-    followCamera.attachControl(container.current, true);
-    followCamera.lockedTarget = this.scene.getMeshByName('body');
-
-    scene.activeCamera = followCamera;
   }
 
   private initPhysics() {
