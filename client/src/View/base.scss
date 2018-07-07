@@ -1,0 +1,109 @@
+/**
+ * @File   : base.scss
+ * @Author : dtysky (dtysky@outlook.com)
+ * @Link   : dtysky.moe
+ * @Date   : 2018-7-8 00:15:02
+ */
+.view-container {
+
+}
+
+.view-gui-start {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #101935;
+
+  &-border {
+    position: absolute;
+    width: 94%;
+    height: 94%;
+    border-width: 2px;
+    border-style: solid;
+
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 50%;
+      height: 80%;
+      border-right-width: 1px;
+      border-right-style: solid;
+    }
+
+    &:after {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 15%;
+      bottom: 5%;
+      border-width: 2px;
+      border-style: solid;
+      box-sizing: border-box;
+    }
+
+    &-1 {
+      left: 3%;
+      top: 2%;
+    }
+
+    &-2 {
+      left: 4%;
+      top: 3%;
+    }
+  }
+
+  &-players {
+    display: flex;
+    position: absolute;
+    width: 1;
+  }
+
+  &-player {
+    &-qr {
+
+    }
+
+    &-w {
+
+    }
+
+    &-h {
+
+    }
+
+    &-active {
+
+    }
+  }
+
+  &-confirm {
+
+  }
+
+  &-r {
+    border-color: #f3025b;
+    
+    &:before, &:after {
+      border-color: #f3025b;
+    }
+  }
+
+  &-b {
+    border-color: #2f81f8;
+
+    &:before, &:after {
+      border-color: #2f81f8;
+    }
+  }
+}
+
+.view-gui-end {
+
+}

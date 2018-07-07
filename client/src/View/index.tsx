@@ -9,25 +9,29 @@ import * as BABYLON from 'babylonjs';
 import 'babylonjs-gui';
 import 'cannon';
 
-import Player from './Player';
 import config from '../config';
+import Player from './Player';
+import GUI from './GUI';
 
 interface IPropTypes {
 
 }
 
 interface IStateTypes {
-
+  state: 'start' | 'playing' | 'end';
 }
 
 export default class View extends React.Component<IPropTypes, IStateTypes> {
+  public state: IStateTypes = {
+    state: 'start'
+  };
+
   private container: React.RefObject<HTMLCanvasElement> = React.createRef();
   private engine: BABYLON.Engine;
   private scene: BABYLON.Scene;
   private groundCollision: BABYLON.Mesh;
-
-  private mainPlayer;
-  private ws;
+  private mainPlayer: BABYLON.AbstractMesh;
+  private ws: WebSocket;
 
   public async componentDidMount() {
     const url = config.url;
@@ -293,9 +297,16 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
 
   public render() {
     return (
-      <canvas
-        ref={this.container}
-      />
+      <React.Fragment>
+        <canvas
+          className={'view-container'}
+          ref={this.container}
+        />
+        <GUI
+          state={this.state.state}
+          handleStart={() => {}}
+        />
+      </React.Fragment>
     );
   }
 }
