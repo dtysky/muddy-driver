@@ -36,11 +36,14 @@ export default class Pedal extends React.Component<{
   private run() {
     this.raf = requestAnimationFrame(() => this.run());
     const v = this.state.velocity - 0.03;
-    this.setState({
-      velocity: v > 0 ? v : 0
-    }, () => {
-      this.props.onChange(this.state.velocity);
-    });
+    this.setState(
+      {
+        velocity: v > 0 ? v : 0
+      },
+      () => {
+        this.props.onChange(this.state.velocity);
+      }
+    );
   }
 
   private onTouchStart = (e, part) => {
