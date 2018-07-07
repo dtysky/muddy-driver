@@ -7,6 +7,8 @@
 import * as React from 'react';
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-gui';
+import 'cannon';
+
 import Player from './Player';
 import config from '../config';
 
@@ -22,9 +24,11 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private container: React.RefObject<HTMLCanvasElement> = React.createRef();
   private engine: BABYLON.Engine;
   private scene: BABYLON.Scene;
+  private groundCollision: BABYLON.Mesh;
 
   private mainPlayer;
   private ws;
+
   public async componentDidMount() {
     const url = config.url;
     this.ws = new WebSocket(`ws://${url}/master`);
@@ -53,10 +57,11 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     const scene = this.scene = new BABYLON.Scene(this.engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0);
 
-    this.initEnv();
+    await this.initEnv();
     this.initPlayer();
     this.initLights();
     this.initCameras();
+    this.initPhysics();
     // this.initAnimations();
     // this.initSounds();
     // this.initHUD();
@@ -71,24 +76,43 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   }
 
   private initEnv() {
-    const skybox = BABYLON.MeshBuilder.CreateBox('skybox', {size: 100}, this.scene);
-    const skyboxMaterial = new BABYLON.StandardMaterial('skybox-material', this.scene);
-    skyboxMaterial.backFaceCulling = false;
-    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-    skyboxMaterial.backFaceCulling = false;
-    skyboxMaterial.disableLighting = true;
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('assets/long-shot/', this.scene);
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-    skybox.material = skyboxMaterial;
-    skybox.position.y = 49;
+    const {scene} = this;
+
+    // const skybox = BABYLON.MeshBuilder.CreateBox('skybox', {size: 100}, this.scene);
+    // const skyboxMaterial = new BABYLON.StandardMaterial('skybox-material', this.scene);
+    // skyboxMaterial.backFaceCulling = false;
+    // skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    // skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    // skyboxMaterial.backFaceCulling = false;
+    // skyboxMaterial.disableLighting = true;
+    // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('assets/long-shot/', this.scene);
+    // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    // skybox.material = skyboxMaterial;
+    // skybox.position.y = 49;
     // skybox.infiniteDistance = true;
 
-    const plane = BABYLON.Mesh.CreatePlane('ground', 100, this.scene);
-    const material = new BABYLON.StandardMaterial('ground-material', this.scene);
-    material.diffuseTexture = new BABYLON.Texture('assets/ground.jpg', this.scene);
-    plane.material = material;
-    plane.rotation.x = Math.PI / 2;
+    return new Promise(resolve => {
+      const ground = BABYLON.Mesh.CreatePlane('ground', 100, this.scene);
+      const material = new BABYLON.StandardMaterial('ground-material', this.scene);
+      material.diffuseTexture = new BABYLON.Texture('assets/ground.jpg', this.scene);
+      ground.material = material;
+      ground.rotation.x = Math.PI / 2;
+
+      const groundCollision = this.groundCollision = BABYLON.Mesh.CreateGroundFromHeightMap(
+        'ground-heightmap', 'assets/ground-heightmap.jpg', 100, 100, 250, 0, 10, scene, true, () => {
+
+          const groundCollisionMaterial = new BABYLON.StandardMaterial('ground-heightmap-material', this.scene);
+          groundCollisionMaterial.alpha = 0;
+          groundCollisionMaterial.alphaMode = 1;
+          groundCollision.material = groundCollisionMaterial;
+          groundCollision.position.x = ground.position.x;
+          groundCollision.position.z = ground.position.y;
+          groundCollision.position.y = ground.position.z;
+
+          return resolve();
+        }
+      );
+    });
   }
 
   private initPlayer() {
@@ -117,7 +141,19 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     followCamera.attachControl(container.current, true);
     followCamera.lockedTarget = this.scene.getMeshByName('body');
 
-    scene.activeCamera = followCamera;
+    scene.activeCamera = camera;
+  }
+
+  private initPhysics() {
+    const {scene, groundCollision} = this;
+
+    scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), new BABYLON.CannonJSPlugin());
+
+    groundCollision.physicsImpostor = new BABYLON.PhysicsImpostor(
+      groundCollision, BABYLON.PhysicsImpostor.HeightmapImpostor,
+      {mass: 0, restitution: 0, friction: 1, ignoreParent: true},
+      scene
+    );
   }
 
   // private initSounds() {
