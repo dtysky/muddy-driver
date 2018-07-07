@@ -35,7 +35,7 @@ export default class Pedal extends React.Component<{
 
   private run() {
     this.raf = requestAnimationFrame(() => this.run());
-    const v = this.state.velocity - 3;
+    const v = this.state.velocity - 0.03;
     this.setState({
       velocity: v > 0 ? v : 0
     }, () => {
@@ -44,6 +44,7 @@ export default class Pedal extends React.Component<{
   }
 
   private onTouchStart = (e, part) => {
+    e.preventDefault();
     if ((this.touchDown.leftPart && part === 'rightPart') || (this.touchDown.rightPart && part === 'leftPart')) {
       return;
     }
@@ -56,11 +57,12 @@ export default class Pedal extends React.Component<{
   }
 
   private onTouchEnd = (e, part) => {
+    e.preventDefault();
     if (!this.touchDown[part]) {
       return;
     }
     this.touchDown[part] = false;
-    const offset = e.changedTouches[0].pageY - this.startY[part];
+    const offset = (e.changedTouches[0].pageY - this.startY[part]) / 100;
     this.setState({
       velocity: (offset > 0 ? offset : 0) + this.state.velocity
     });
@@ -78,11 +80,13 @@ export default class Pedal extends React.Component<{
           className='left'
           onTouchStart={(e) => this.onTouchStart(e, 'leftPart')}
           onTouchEnd={(e) => this.onTouchEnd(e, 'leftPart')}
+          onTouchMove={(e) => e.preventDefault()}
         >
         </div>
         <div
           className='right'
           onTouchStart={(e) => this.onTouchStart(e, 'rightPart')}
+          onTouchMove={(e) => e.preventDefault()}
           onTouchEnd={(e) => this.onTouchEnd(e, 'rightPart')}
         >
         </div>

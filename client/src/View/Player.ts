@@ -11,5 +11,9 @@ export default class Player {
 
   constructor(scene: BABYLON.Scene) {
     this.scene = scene;
+    const material = new BABYLON.StandardMaterial('ground-material', this.scene);
+    material.diffuseTexture = new BABYLON.Texture('assets/ground.jpg', this.scene);
+    const body = BABYLON.MeshBuilder.CreatePlane('body', {width: 5, height: 2}, scene);
+    body.material = material;
   }
 }
