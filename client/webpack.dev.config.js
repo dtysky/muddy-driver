@@ -9,11 +9,6 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const phaserModule = path.join(__dirname, '../node_modules/phaser-ce/');
-const phaser = path.join(phaserModule, 'build/custom/phaser-split.js');
-const pixi = path.join(phaserModule, 'build/custom/pixi.js');
-const p2 = path.join(phaserModule, 'build/custom/p2.js');
-
 module.exports = {
   entry: {
     main: [
@@ -32,8 +27,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".md"],
-    alias: {'phaser-ce': phaser, p2, pixi}
+    extensions: [".ts", ".tsx", ".js", ".md"]
   },
 
   externals: {
@@ -43,18 +37,6 @@ module.exports = {
   
   module: {
     rules: [
-      {
-        test: /pixi\.js/,
-        use: ['expose-loader?PIXI']
-      },
-      {
-        test: /phaser-split\.js$/,
-        use: ['expose-loader?Phaser']
-      },
-      {
-        test: /p2\.js/,
-        use: ['expose-loader?p2']
-      },
       {
         enforce: 'pre',
         test: /\.tsx?$/,
@@ -120,6 +102,12 @@ module.exports = {
   },
 
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('development'),
+        BROWSER: JSON.stringify(true)
+      }
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       template: './client/index.html'

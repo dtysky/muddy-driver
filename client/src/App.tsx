@@ -9,6 +9,8 @@ import {
   Route, Switch, withRouter, RouteComponentProps, Redirect
 } from 'react-router-dom';
 
+import View from './View';
+
 interface IPropTypes extends RouteComponentProps<{}> {
 
 }
@@ -20,10 +22,10 @@ interface IStateTypes {
 class App extends React.Component<IPropTypes, IStateTypes> {
   public render() {
     return (
-      <div>
-        Hello world
-        <img src={require('../assets/test.png')} />
-      </div>
+      <Switch>
+        <Route path={'/player/:roomId'} component={null} />
+        <Route path={'/view'} component={View} />
+      </Switch>
     );
   }
 }
