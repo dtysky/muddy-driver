@@ -29,12 +29,12 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     this.engine = new BABYLON.Engine(canvas, true);
 
     const scene = this.scene = new BABYLON.Scene(this.engine);
-    scene.clearColor = new BABYLON.Color4(.8, .8, .8);
+    scene.clearColor = new BABYLON.Color4(0, 0, 0);
 
     this.initEnv();
     this.initPlayer();
-    // this.initLights();
-    // this.initCameras();
+    this.initLights();
+    this.initCameras();
     // this.initAnimations();
     // this.initSounds();
     // this.initHUD();
@@ -43,50 +43,46 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     this.engine.runRenderLoop(this.loop);
 
     window.addEventListener('resize', () => {
-      this.container.current.width = window.innerWidth;
-      this.container.current.height = window.innerHeight;
+      this.container.current.width = document.body.clientWidth;
+      this.container.current.height = document.body.clientHeight;
     });
   }
 
   private initEnv() {
-
+    const plane = BABYLON.Mesh.CreatePlane('ground', 100, this.scene);
+    let material = new BABYLON.StandardMaterial('ground-material', this.scene);
+    material.diffuseTexture = new BABYLON.Texture('assets/ground.jpg', this.scene);
+    plane.material = material;
+    plane.rotation.x = Math.PI / 2;
   }
 
   private initPlayer() {
 
   }
 
-  // private initLights() {
-  //   const {scene, cat} = this;
+  private initLights() {
+    const {scene} = this;
 
-  //   const directionalLight =  new BABYLON.DirectionalLight('directionalLight', new BABYLON.Vector3(-2, -2, 1), scene);
-  //   directionalLight.intensity = 2;
-  //   directionalLight.shadowEnabled = true;
+    const hemisphericLight = new BABYLON.HemisphericLight('hemisphericLight', new BABYLON.Vector3(1, 1, 1), scene);
+    hemisphericLight.intensity = 2;
+  }
 
-  //   const shadowGenerator = new BABYLON.ShadowGenerator(1024, directionalLight);
-  //   scene.meshes.forEach(mesh => {
-  //     if (/^node_/.test(mesh.name)) {
-  //       shadowGenerator.addShadowCaster(mesh);
-  //     }
-  //   });
-  // }
+  private initCameras() {
+    const {scene, container} = this;
 
-  // private initCameras() {
-  //   const {scene, container} = this;
+    const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 100, new BABYLON.Vector3(0, 0, 0), scene);
+    camera.attachControl(container.current, true);
 
-  //   const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 1, new BABYLON.Vector3(-5, 10, -36), scene);
-  //   camera.attachControl(container.current, true);
+    // const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
+    // followCamera.radius = 20;
+    // followCamera.heightOffset = 10;
+    // followCamera.rotationOffset = 0;
+    // followCamera.maxCameraSpeed = 10;
+    // followCamera.attachControl(container.current, true);
+    // followCamera.lockedTarget = cat;
 
-  //   const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
-  //   followCamera.radius = 20;
-  //   followCamera.heightOffset = 10;
-  //   followCamera.rotationOffset = 0;
-  //   followCamera.maxCameraSpeed = 10;
-  //   followCamera.attachControl(container.current, true);
-  //   followCamera.lockedTarget = cat;
-
-  //   scene.activeCamera = camera;
-  // }
+    scene.activeCamera = camera;
+  }
 
   // private initSounds() {
   //   const {scene} = this;

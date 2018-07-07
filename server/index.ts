@@ -27,6 +27,12 @@ const rooms: {
   [id: number]: TRoom
 } = {};
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  next();
+});
+
 app.get('/test', (req, res) => {
   res.send('Hello');
 });
@@ -45,6 +51,16 @@ app.ws('/ws-test', (ws, req) => {
 let wsMaster: WS = null;
 app.ws('/master', (ws, req) => {
   wsMaster = ws;
+
+  ws.on('close', () => {
+    delete rooms['0'];
+    delete rooms['1'];
+  });
+
+  ws.on('error', () => {
+    delete rooms['0'];
+    delete rooms['1'];
+  });
 });
 
 app.get('/player/join/:id', (req, res) => {
@@ -65,16 +81,10 @@ app.get('/player/join/:id', (req, res) => {
 
   let role = 'handlebar';
 
-  if (!room.ready.handlebar) {
-    room.ready.handlebar = true;
-  } else if (!room.ready.wheel) {
+  if (!room.ready.wheel) {
     role = 'wheel';
-    room.ready.wheel = true;
   }
 
-  room.alive = room.ready.handlebar && room.ready.wheel;
-
-  wsMaster.send(JSON.stringify({type: 'rooms', value: rooms}));
   res.send({code: 0, data: {role}});
 });
 
@@ -83,11 +93,22 @@ app.ws('/room/:id/:role', (ws, req) => {
   const id = parseInt(req.params.id, 10);
   const room = rooms[id];
 
-  ws.on('message', value => {
-    console.log(id, role, value);
+  ws.on('message', (reqData: string) => {
+    const data: {type: 'init' | 'value', value?: number} = JSON.parse(reqData);
 
-    wsMaster.send({type: 'control', value: {role, id, value}});
-    ws.send('haha');
+    if (data.type === 'init') {
+      if (role === 'handlebar') {
+        room.ready.handlebar = true;
+      } else if (role === 'wheel') {
+        room.ready.wheel = true;
+      }
+
+      room.alive = room.ready.handlebar && room.ready.wheel;
+
+      wsMaster.send(JSON.stringify({type: 'rooms', value: rooms}));
+    } else {
+      wsMaster.send(JSON.stringify({type: 'control', value: {role, id, value: data.value}}));
+    }
   });
 
   ws.on('close', () => {
