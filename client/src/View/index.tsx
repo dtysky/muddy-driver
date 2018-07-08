@@ -37,8 +37,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   public componentDidMount() {
     wsMaster.connect();
 
-    this.initGL();
-    this.setState({state: 'step'});
+    // this.initGL();
+    // this.setState({state: 'step'});
     // this.setState({state: 'playing'});
   }
 
@@ -108,7 +108,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
       ground.rotation.x = Math.PI / 2;
 
       const groundCollision = this.groundCollision = BABYLON.Mesh.CreateGroundFromHeightMap(
-        'ground-heightmap', 'assets/ground-heightmap.jpg', 100, 100, 250, 0, 10, scene, true, () => {
+        'ground-heightmap', 'assets/ground-heightmap.png', 100, 100, 250, 0, 10, scene, true, () => {
 
           const groundCollisionMaterial = new BABYLON.StandardMaterial('ground-heightmap-material', this.scene);
           groundCollisionMaterial.alpha = 0;
@@ -129,14 +129,14 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     material.diffuseTexture = new BABYLON.Texture(`assets/ground.jpg`, this.scene);
     material.ambientColor = new BABYLON.Color3(1, 1, 1);
 
-    const mesh = BABYLON.MeshBuilder.CreateBox('barrier', {width: 2, height: 1.5, depth: 8}, this.scene);
+    const mesh = BABYLON.MeshBuilder.CreateBox('barrier', {width: .1, height: 0.1, depth: 8}, this.scene);
     mesh.material = material;
     mesh.physicsImpostor = new BABYLON.PhysicsImpostor(
       mesh, BABYLON.PhysicsImpostor.BoxImpostor,
       {mass: 0, restitution: 0, friction: 1, ignoreParent: true},
       this.scene
     );
-    mesh.position.set(-7, 1, 17);
+    mesh.position.set(15, 0, -17);
 
     mesh.physicsImpostor.onCollideEvent = (self, other) => {
       const obj = other.object as BABYLON.Mesh;
@@ -153,8 +153,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
 
   private initPlayer() {
     Player.INIT_MATERIAL(this.scene);
-    const p1 = new Player('P1', this.container, this.scene, [0, 3, 19]);
-    const p2 = new Player('P2', this.container, this.scene, [0, 3, 15]);
+    const p1 = new Player('P1', this.container, this.scene, [22, 2.2, -16]);
+    const p2 = new Player('P2', this.container, this.scene, [22, 2.2, -19]);
 
     this.players.push(p1);
     this.players.push(p2);
