@@ -75,11 +75,11 @@ export default class Player {
     plane.material = Player.materials.forward[0];
 
     plane.position.set(0, -0.7, 0);
-    plane.rotation.x = Math.PI / 4;
+    plane.rotation.x = Math.PI / 4;;
 
     const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
     followCamera.radius = -1.414 * 10;
-    followCamera.heightOffset = 10;
+    followCamera.heightOffset = 5;
     followCamera.rotationOffset = 0;
     followCamera.maxCameraSpeed = 10;
     followCamera.attachControl(container.current, true);

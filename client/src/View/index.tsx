@@ -24,7 +24,7 @@ interface IStateTypes {
 
 export default class View extends React.Component<IPropTypes, IStateTypes> {
   public state: IStateTypes = {
-    state: 'playing'
+    state: 'start'
   };
 
   private container: React.RefObject<HTMLCanvasElement> = React.createRef();
@@ -32,7 +32,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private scene: BABYLON.Scene;
   private groundCollision: BABYLON.Mesh;
 
-  public async componentDidMount() {
+  private async initGL() {
     const canvas = this.container.current;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -63,20 +63,25 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private initEnv() {
     const {scene} = this;
 
-    const skybox = BABYLON.MeshBuilder.CreateBox('skybox', {size: 150}, this.scene);
-    const skyboxMaterial = new BABYLON.StandardMaterial('skybox-material', this.scene);
-    skyboxMaterial.ambientColor = new BABYLON.Color3(1, 1, 1);
-    skyboxMaterial.backFaceCulling = false;
-    skyboxMaterial.disableLighting = true;
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture('assets/long-shot/', this.scene);
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-    skybox.material = skyboxMaterial;
-    skybox.position.y = 0;
-    skybox.infiniteDistance = true;
+    [3].forEach(id => {
+      const skybox = BABYLON.Mesh.CreateBox(`skybox${id}`, 100, scene);
+      const skyboxMaterial = new BABYLON.StandardMaterial(`skybox-material${id}`, scene);
+      skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+      skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+      skyboxMaterial.backFaceCulling = false;
+      skyboxMaterial.disableLighting = true;
+      skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(`assets/bg${id}/`, this.scene);
+      skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+      skybox.material = skyboxMaterial;
+      skybox.position.y = 49.9;
+      skybox.infiniteDistance = true;
+      // skybox.rotation.x = -Math.PI / 4;
+    });
 
     return new Promise(resolve => {
       const ground = BABYLON.Mesh.CreatePlane('ground', 100, this.scene);
       const material = new BABYLON.StandardMaterial('ground-material', this.scene);
+      material.disableLighting = true;
       material.diffuseTexture = new BABYLON.Texture('assets/ground.jpg', this.scene);
       material.ambientColor = new BABYLON.Color3(1, 1, 1);
       ground.material = material;
@@ -115,6 +120,9 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     const {scene} = this;
 
     scene.ambientColor = new BABYLON.Color3(1, 1, 1);
+    // const hemisphericLight =  new BABYLON.HemisphericLight('directionalLight', new BABYLON.Vector3(1, 1, 1), scene);
+    const directionalLight =  new BABYLON.DirectionalLight('directionalLight', new BABYLON.Vector3(-2, -2, 1), scene);
+    // hemisphericLight.intensity = 2;
   }
 
   private initCameras() {
@@ -122,6 +130,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
 
     const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 10, new BABYLON.Vector3(0, 0, 0), scene);
     camera.attachControl(container.current, true);
+
+    // scene.activeCamera = camera;
   }
 
   private initPhysics() {
@@ -176,8 +186,9 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
         />
         <GUI
           state={this.state.state}
-          handleStart={() => {
+          handleStart={async () => {
             wsMaster.ready = true;
+            await this.initGL();
             this.setState({state: 'playing'});
           }}
         />

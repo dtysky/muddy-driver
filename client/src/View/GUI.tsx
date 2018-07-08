@@ -27,6 +27,7 @@ interface IStateTypes {
       wheel: boolean;
     }
   };
+  state: 'init' | 'title' | 'playing' | 'start' | 'end';
 }
 
 export default class GUI extends React.Component<IPropTypes, IStateTypes> {
@@ -40,8 +41,12 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
         handlebar: false,
         wheel: false
       }
-    }
+    },
+    state: 'init'
   };
+
+  private videoElement: React.RefObject<HTMLVideoElement> = React.createRef();
+  private bgmElement: React.RefObject<HTMLAudioElement> = React.createRef();
 
   public componentDidMount() {
     wsMaster.handleRooms = data => {
@@ -59,6 +64,33 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
 
       this.forceUpdate();
     };
+
+    this.videoElement.current.addEventListener('ended', () => {
+      // play
+      this.bgmElement.current.play();
+      this.setState({state: 'title'});
+    });
+
+    this.videoElement.current.addEventListener('click', () => {
+      if (this.state.state !== 'title') {
+        return;
+      }
+      // stop
+      this.setState({state: 'start'});
+    });
+  }
+
+  public componentWillReceiveProps(nextProps: IPropTypes) {
+    if (nextProps.state === 'start') {
+      this.setState({state: 'init'});
+      return;
+    }
+
+    if (nextProps.state === 'playing') {
+      this.bgmElement.current.currentTime = 0;
+    }
+
+    this.setState({state: nextProps.state});
   }
 
   public componentWillUnmount() {
@@ -66,15 +98,42 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
   }
 
   public render() {
-    if (this.props.state === 'playing') {
+    return (
+      <div className={'view-gui'}>
+        {this.renderContent()}
+        <audio
+          src={'/assets/bgm.mp3'}
+          ref={this.bgmElement}
+        />
+      </div>
+    );
+  }
+
+  public renderContent() {
+    if (this.state.state === 'playing') {
       return null;
     }
 
-    if (this.props.state === 'start') {
+    if (this.state.state === 'init' || this.state.state === 'title') {
+      return this.renderInit();
+    }
+
+    if (this.state.state === 'start') {
       return this.renderStart();
     }
 
     return this.renderEnd();
+  }
+
+  private renderInit() {
+    return (
+      <video
+        className={'view-gui-init'}
+        src={'/assets/logo.mp4'}
+        ref={this.videoElement}
+        autoPlay
+      />
+    );
   }
 
   private renderStart() {
