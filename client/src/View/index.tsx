@@ -30,7 +30,6 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private engine: BABYLON.Engine;
   private scene: BABYLON.Scene;
   private groundCollision: BABYLON.Mesh;
-  private players = {};
 
   public async componentDidMount() {
     const canvas = this.container.current;
@@ -101,14 +100,14 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
 
   private initPlayer() {
     Player.INIT_MATERIAL(this.scene);
-    this.players[1] = new Player(this.container, this.scene, [0, 3, 15]);
-    this.players[2] = new Player(this.container, this.scene, [0, 3, 12]);
+    const p1 = new Player(1, this.container, this.scene, [0, 3, 15]);
+    const p2 = new Player(2, this.container, this.scene, [0, 3, 12]);
 
-    this.scene.activeCameras.push(this.players[1].followCamera);
-    this.scene.activeCameras.push(this.players[2].followCamera);
+    this.scene.activeCameras.push(p1.followCamera);
+    this.scene.activeCameras.push(p2.followCamera);
 
-    this.players[1].followCamera.viewport = new BABYLON.Viewport(0.501, 0, 0.501, 1.0);
-    this.players[2].followCamera.viewport = new BABYLON.Viewport(0, 0, 0.499, 1.0);
+    p1.followCamera.viewport = new BABYLON.Viewport(0.501, 0, 0.501, 1.0);
+    p2.followCamera.viewport = new BABYLON.Viewport(0, 0, 0.499, 1.0);
   }
 
   private initLights() {

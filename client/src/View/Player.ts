@@ -9,6 +9,7 @@ import wsMaster from './wsMaster';
 
 export default class Player {
   private scene: BABYLON.Scene;
+  public id;
   public mesh;
   public followCamera;
 
@@ -52,7 +53,8 @@ export default class Player {
     });
   }
 
-  constructor(container, scene: BABYLON.Scene, position) {
+  constructor(id, container, scene: BABYLON.Scene, position) {
+    this.id = id;
     this.scene = scene;
     const fakeMaterial = new BABYLON.StandardMaterial('ground-material', this.scene);
 
@@ -85,6 +87,9 @@ export default class Player {
 
     wsMaster.handleControl = data => {
       const { role, id, value } = data;
+      if (id !== this.id) {
+        return;
+      }
       if (role === 'wheel') {
         this.mesh.translate(this.mesh.forward, value / 20, BABYLON.Space.WORLD);
       } else {
