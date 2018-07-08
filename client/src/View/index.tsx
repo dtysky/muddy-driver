@@ -37,9 +37,9 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   public componentDidMount() {
     wsMaster.connect();
 
-    // this.initGL();
+    this.initGL();
     // this.setState({state: 'step'});
-    // this.setState({state: 'playing'});
+    this.setState({state: 'playing'});
   }
 
   private async initGL() {
@@ -84,7 +84,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
       // skybox.infiniteDistance = true;
       // skybox.rotation.x = -Math.PI / 4;
 
-      const skybox = BABYLON.Mesh.CreateCylinder('skybox', 30, 50 + id * 10, 50 + id * 10, 32, 32, scene, false, BABYLON.Mesh.FRONTSIDE);
+      const skybox = BABYLON.Mesh.CreateCylinder('skybox', 30, 10 + id * 10, 10 + id * 10, 32, 32, scene, false, BABYLON.Mesh.FRONTSIDE);
       const skyboxMaterial = new BABYLON.StandardMaterial(`skybox-material${id}`, scene);
       skyboxMaterial.ambientColor = new BABYLON.Color3(1, 1, 1);
       skyboxMaterial.diffuseTexture = new BABYLON.Texture(`assets/bg${id}.png`, this.scene);
@@ -93,9 +93,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
       skyboxMaterial.backFaceCulling = false;
       skyboxMaterial.disableLighting = true;
       skybox.material = skyboxMaterial;
-      skybox.position.y = 14.9;
+      skybox.position.y = 14.8;
       skybox.infiniteDistance = true;
-      // skybox.rotation.x = -Math.PI / 10;
     });
 
     return new Promise(resolve => {
@@ -161,16 +160,13 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     this.scene.activeCameras.push(p1.followCamera);
     this.scene.activeCameras.push(p2.followCamera);
 
-    p1.followCamera.viewport = new BABYLON.Viewport(0.501, 0, 0.501, 1.0);
-    p2.followCamera.viewport = new BABYLON.Viewport(0, 0, 0.499, 1.0);
+    p2.followCamera.viewport = new BABYLON.Viewport(0.501, 0, 0.501, 1.0);
+    p1.followCamera.viewport = new BABYLON.Viewport(0, 0, 0.499, 1.0);
   }
 
   private initLights() {
     const {scene} = this;
     scene.ambientColor = new BABYLON.Color3(1, 1, 1);
-    // const hemisphericLight =  new BABYLON.HemisphericLight('directionalLight', new BABYLON.Vector3(1, 1, 1), scene);
-    const directionalLight =  new BABYLON.DirectionalLight('directionalLight', new BABYLON.Vector3(-2, -2, 1), scene);
-    // hemisphericLight.intensity = 2;
   }
 
   private initCameras() {
