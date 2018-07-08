@@ -34,18 +34,26 @@ export default class Player {
   public static INIT_MATERIAL(scene) {
     const res = {
       forward: [
-        'forward/0.png',
-        'forward/1.png',
-        'forward/2.png',
-        'forward/3.png'
+        'forward/w0.png',
+        'forward/w1.png',
+        'forward/w2.png',
+        'forward/w3.png',
+        'forward/y0.png',
+        'forward/y1.png',
+        'forward/y2.png',
+        'forward/y3.png'
       ],
       left: [
-        'turning/l1.png',
-        'turning/l2.png'
+        'turning/wl1.png',
+        'turning/wl2.png',
+        'turning/yl1.png',
+        'turning/yl2.png'
       ],
       right: [
-        'turning/r1.png',
-        'turning/r2.png'
+        'turning/wr1.png',
+        'turning/wr2.png',
+        'turning/yr1.png',
+        'turning/yr2.png'
       ]
     };
     Object.keys(res).forEach(i => {
@@ -110,9 +118,9 @@ export default class Player {
         const dir = value > 0 ? 'right' : 'left';
         this.status = dir;
         if (t > 0.1) {
-          this.turningMaterial = Player.materials[dir][0];
+          this.turningMaterial = Player.materials[dir][0 + 2 * (id - 1)];
         } else if (t > 0.3) {
-          this.turningMaterial = Player.materials[dir][1];
+          this.turningMaterial = Player.materials[dir][1 + 2 * (id - 1)];
         } else {
           this.status = 'forawrd';
         }
@@ -144,7 +152,7 @@ export default class Player {
   public update() {
     if (this.status === 'forward') {
       if (this.expired < Date.now()) {
-        this.plane.material = Player.materials.forward[(animationIndex++) % 4];
+        this.plane.material = Player.materials.forward[(animationIndex++) % 4 + (parseInt(this.id.substr(1), 10) - 1) * 4];
         this.expired = Date.now() + 500 / this.velocity;
       }
     } else {

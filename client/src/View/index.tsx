@@ -151,7 +151,6 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
 
   private initLights() {
     const {scene} = this;
-
     scene.ambientColor = new BABYLON.Color3(1, 1, 1);
     // const hemisphericLight =  new BABYLON.HemisphericLight('directionalLight', new BABYLON.Vector3(1, 1, 1), scene);
     const directionalLight =  new BABYLON.DirectionalLight('directionalLight', new BABYLON.Vector3(-2, -2, 1), scene);
