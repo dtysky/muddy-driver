@@ -7,8 +7,11 @@
 import * as BABYLON from 'babylonjs';
 import wsMaster from './wsMaster';
 
+let animationIndex = 0;
 export default class Player {
+  private expired = 0;
   private interval;
+  private turningMaterial;
   private scene: BABYLON.Scene;
   public id;
   public mesh;
@@ -26,6 +29,8 @@ export default class Player {
     ]
   };
 
+  private status = 'forward';
+  private velocity = 0;
   public static INIT_MATERIAL(scene) {
     const res = {
       forward: [
@@ -96,16 +101,19 @@ export default class Player {
       }
       if (role === 'wheel') {
         this.mesh.translate(this.mesh.forward, value / 20, BABYLON.Space.WORLD);
-        this.startForwardAnimation(value / 20);
+        this.status = 'forward';
+        this.velocity = value / 20;
       } else {
         this.mesh.rotation.y += value / 20;
-        const t = Math.abs(value / Math.PI / 2);
+        const t = Math.abs(value / (Math.PI / 2));
         const dir = value > 0 ? 'right' : 'left';
-        this.stopAnimation();
+        this.status = dir;
         if (t > 0.1) {
-          plane.material = Player.materials[dir][0];
+          this.turningMaterial = Player.materials[dir][0];
         } else if (t > 0.3) {
-          plane.material = Player.materials[dir][1];
+          this.turningMaterial = Player.materials[dir][1];
+        } else {
+          this.status = 'forawrd';
         }
       }
     });
@@ -114,6 +122,7 @@ export default class Player {
 
     const rect = new BABYLON.GUI.Rectangle();
     rect.width = 0.1;
+    rect.horizontalAlignment = 1;
     rect.height = '40px';
     rect.cornerRadius = 4;
     rect.color = 'white';
@@ -131,18 +140,14 @@ export default class Player {
 
   }
 
-  private stopAnimation() {
-    if (this.interval) {
-      clearInterval(this.interval);
+  public update() {
+    if (this.status === 'forward') {
+      if (this.expired < Date.now()) {
+        this.plane.material = Player.materials.forward[(animationIndex++) % 4];
+        this.expired = Date.now() + 500 / this.velocity;
+      }
+    } else {
+      this.plane.material = this.turningMaterial;
     }
-  }
-
-  private startForwardAnimation(velocity: number) {
-    if (velocity === 0) {
-      return;
-    }
-    this.stopAnimation();
-    let i = 0;
-    this.interval = setInterval(() => this.plane.material = Player.materials.forward[(i++) % 4], 300 / velocity);
   }
 }

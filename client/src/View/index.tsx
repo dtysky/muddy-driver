@@ -26,6 +26,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   public state: IStateTypes = {
     state: 'playing'
   };
+  private players = [];
 
   private container: React.RefObject<HTMLCanvasElement> = React.createRef();
   private engine: BABYLON.Engine;
@@ -104,6 +105,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     const p1 = new Player('P1', this.container, this.scene, [0, 3, 15]);
     const p2 = new Player('P2', this.container, this.scene, [0, 3, 12]);
 
+    this.players.push(p1);
+    this.players.push(p2);
     this.scene.activeCameras.push(p1.followCamera);
     this.scene.activeCameras.push(p2.followCamera);
 
@@ -159,7 +162,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   // }
 
   private update() {
-    // this.mainPlayer.translate(this.mainPlayer.forward, -0.1, BABYLON.Space.WORLD);
+    this.players.forEach(i => i.update());
   }
 
   private loop = () => {

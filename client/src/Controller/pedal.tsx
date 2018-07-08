@@ -35,7 +35,7 @@ export default class Pedal extends React.Component<{
 
   private run() {
     this.raf = requestAnimationFrame(() => this.run());
-    const v = this.state.velocity - 0.03;
+    const v = this.state.velocity - 0.08;
     this.setState(
       {
         velocity: v > 0 ? v : 0
