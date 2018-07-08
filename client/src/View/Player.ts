@@ -8,9 +8,11 @@ import * as BABYLON from 'babylonjs';
 import wsMaster from './wsMaster';
 
 export default class Player {
+  private interval;
   private scene: BABYLON.Scene;
   public id;
   public mesh;
+  private plane;
   public followCamera;
 
   public static materials = {
@@ -59,7 +61,7 @@ export default class Player {
     const fakeMaterial = new BABYLON.StandardMaterial('ground-material', this.scene);
 
     this.mesh = BABYLON.MeshBuilder.CreateBox('body', {width: 3, height: 3, depth: 3}, scene);
-    const plane = BABYLON.MeshBuilder.CreatePlane('plane', {width: 3, height: 3}, scene);
+    const plane = BABYLON.MeshBuilder.CreatePlane('plane', {width: 3, height: 3 * 729 / 516}, scene);
     this.mesh.addChild(plane);
     this.mesh.material = fakeMaterial;
     this.mesh.material.alpha = 0;
@@ -72,11 +74,11 @@ export default class Player {
     );
     plane.material = Player.materials.forward[0];
 
-    plane.position.set(0, -0.9, 0);
+    plane.position.set(0, -0.7, 0);
     plane.rotation.x = Math.PI / 4;
 
     const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
-    followCamera.radius = -10;
+    followCamera.radius = -1.414 * 10;
     followCamera.heightOffset = 10;
     followCamera.rotationOffset = 0;
     followCamera.maxCameraSpeed = 10;
@@ -85,16 +87,43 @@ export default class Player {
 
     this.followCamera = followCamera;
 
+    this.plane = plane;
+
     wsMaster.controlHandlers.push(data => {
       const { role, id, value } = data;
       if (id !== this.id) {
         return;
       }
       if (role === 'wheel') {
-        this.mesh.translate(this.mesh.forward, value / Math.PI / 200, BABYLON.Space.WORLD);
+        this.mesh.translate(this.mesh.forward, value / 20, BABYLON.Space.WORLD);
+        this.startForwardAnimation(value / 20);
       } else {
-        this.mesh.rotation.y += value;
+        this.mesh.rotation.y += value / 20;
+        const t = Math.abs(value / Math.PI / 2);
+        const dir = value > 0 ? 'right' : 'left';
+        this.stopAnimation();
+        if (t > 0.1) {
+          plane.material = Player.materials[dir][0];
+        } else if (t > 0.3) {
+          plane.material = Player.materials[dir][1];
+        }
       }
     });
+
+  }
+
+  private stopAnimation() {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
+
+  private startForwardAnimation(velocity: number) {
+    if (velocity === 0) {
+      return;
+    }
+    this.stopAnimation();
+    let i = 0;
+    this.interval = setInterval(() => this.plane.material = Player.materials.forward[(i++) % 4], 300 / velocity);
   }
 }
