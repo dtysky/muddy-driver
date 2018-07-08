@@ -100,6 +100,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   }
 
   private initPlayer() {
+    Player.INIT_MATERIAL(this.scene);
     this.players[1] = new Player(this.container, this.scene, [0, 3, 15]);
     this.players[2] = new Player(this.container, this.scene, [0, 3, 12]);
 

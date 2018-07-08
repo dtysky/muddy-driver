@@ -12,19 +12,55 @@ export default class Player {
   public mesh;
   public followCamera;
 
+  public static materials = {
+    forward: [
+    ],
+    left: [
+
+    ],
+    right: [
+
+    ]
+  };
+
+  public static INIT_MATERIAL(scene) {
+    const res = {
+      forward: [
+        'forward/0.png',
+        'forward/1.png',
+        'forward/2.png',
+        'forward/3.png'
+      ],
+      left: [
+        'turning/l1.png',
+        'turning/l2.png'
+      ],
+      right: [
+        'turning/r1.png',
+        'turning/r2.png'
+      ]
+    };
+    Object.keys(res).forEach(i => {
+      res[i].forEach((j, idx) => {
+        const material = new BABYLON.StandardMaterial(j, scene);
+        material.diffuseTexture = new BABYLON.Texture(`assets/${j}`, scene);
+        material.diffuseTexture.hasAlpha = true;
+        material.alphaMode = 0;
+        material.ambientColor = new BABYLON.Color3(1, 1, 1);
+        Player.materials[i][idx] = material;
+      });
+    });
+  }
+
   constructor(container, scene: BABYLON.Scene, position) {
     this.scene = scene;
-    const material = new BABYLON.StandardMaterial('ground-material', this.scene);
     const fakeMaterial = new BABYLON.StandardMaterial('ground-material', this.scene);
-    material.diffuseTexture = new BABYLON.Texture('assets/sexy.png', this.scene);
-    material.diffuseTexture.hasAlpha = true;
 
     this.mesh = BABYLON.MeshBuilder.CreateBox('body', {width: 3, height: 3, depth: 3}, scene);
     const plane = BABYLON.MeshBuilder.CreatePlane('plane', {width: 3, height: 3}, scene);
     this.mesh.addChild(plane);
     this.mesh.material = fakeMaterial;
     this.mesh.material.alpha = 0;
-    material.alphaMode = 0;
     this.mesh.position.set(...position);
     this.mesh.rotation.y = Math.PI / 2;
     this.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(
@@ -32,11 +68,10 @@ export default class Player {
       {mass: 1, restitution: 0, friction: 1, ignoreParent: true},
       scene
     );
-    plane.material = material;
+    plane.material = Player.materials.forward[0];
 
-    plane.position.set(0, 0, 0);
+    plane.position.set(0, -0.9, 0);
     plane.rotation.x = Math.PI / 4;
-    material.ambientColor = new BABYLON.Color3(1, 1, 1);
 
     const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
     followCamera.radius = -10;
