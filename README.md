@@ -31,10 +31,11 @@ Then open `${your_ip}:4444/view`, you will see the logos:
 
 Click it and you will see this:  
 
-![](images/3.jpg)  
+![](images/0.jpg)  
 
 Use your mobiles to scan the two qrcodes then click `start` to start game, every cycle need two mobiles to control, one for controller orientation (rotate), another for speed(slide):   
 
+![](images/3.jpg)  
 ![](images/4.jpg)  
 ![](images/5.jpg)  
 
