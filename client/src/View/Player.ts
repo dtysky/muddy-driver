@@ -155,7 +155,7 @@ export default class Player {
     if (this.status === 'forward') {
       if (this.expired < Date.now()) {
         this.plane.material = Player.materials.forward[(animationIndex++) % 4 + (parseInt(this.id.substr(1), 10) - 1) * 4];
-        this.expired = Date.now() + 200 / this.velocity;
+        this.expired = Date.now() + 20 / this.velocity;
       }
     } else {
       this.plane.material = this.turningMaterial;
