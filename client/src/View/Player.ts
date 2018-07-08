@@ -65,7 +65,7 @@ export default class Player {
     this.scene = scene;
     const fakeMaterial = new BABYLON.StandardMaterial('ground-material', this.scene);
 
-    this.mesh = BABYLON.MeshBuilder.CreateBox('body', {width: 3, height: 3, depth: 3}, scene);
+    this.mesh = BABYLON.MeshBuilder.CreateBox(id, {width: 3, height: 3, depth: 3}, scene);
     const plane = BABYLON.MeshBuilder.CreatePlane('plane', {width: 3, height: 3 * 729 / 516}, scene);
     this.mesh.addChild(plane);
     this.mesh.material = fakeMaterial;
