@@ -7,9 +7,9 @@
 import * as BABYLON from 'babylonjs';
 import wsMaster from './wsMaster';
 
-let animationIndex = 0;
 export default class Player {
   private expired = 0;
+  private animationIndex = 0;
   private interval;
   private turningMaterial;
   private scene: BABYLON.Scene;
@@ -30,7 +30,7 @@ export default class Player {
   };
 
   private status = 'forward';
-  private velocity = 0;
+  private velocity = 1 / 20;
   public static INIT_MATERIAL(scene) {
     const res = {
       forward: [
@@ -154,7 +154,7 @@ export default class Player {
   public update() {
     if (this.status === 'forward') {
       if (this.expired < Date.now()) {
-        this.plane.material = Player.materials.forward[(animationIndex++) % 4 + (parseInt(this.id.substr(1), 10) - 1) * 4];
+        this.plane.material = Player.materials.forward[(this.animationIndex++) % 4 + (parseInt(this.id.substr(1), 10) - 1) * 4];
         this.expired = Date.now() + 20 / this.velocity;
       }
     } else {

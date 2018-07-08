@@ -33,6 +33,6 @@ export default class HandleBar extends React.Component<{
     doManager.start();
   }
   public render() {
-    return <div>{this.state.pitch * 180 / Math.PI}</div>;
+    return <div className='handlebar'>{this.state.pitch * 180 / Math.PI}</div>;
   }
 }
