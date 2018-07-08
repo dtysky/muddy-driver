@@ -119,9 +119,9 @@ export default class Player {
         const t = Math.abs(value / (Math.PI / 2));
         const dir = value > 0 ? 'right' : 'left';
         this.status = dir;
-        if (t > 0.1) {
+        if (t > 0.3) {
           this.turningMaterial = Player.materials[dir][0 + 2 * (id - 1)];
-        } else if (t > 0.3) {
+        } else if (t > 0.7) {
           this.turningMaterial = Player.materials[dir][1 + 2 * (id - 1)];
         } else {
           this.status = 'forawrd';
