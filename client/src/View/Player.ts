@@ -110,6 +110,25 @@ export default class Player {
       }
     });
 
+    const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
+
+    const rect = new BABYLON.GUI.Rectangle();
+    rect.width = 0.1;
+    rect.height = '40px';
+    rect.cornerRadius = 4;
+    rect.color = 'white';
+    rect.thickness = 2;
+    rect.scaleX = 2;
+    advancedTexture.addControl(rect);
+
+    const label = new BABYLON.GUI.TextBlock();
+    label.text = id;
+    rect.addControl(label);
+
+    rect.linkWithMesh(this.mesh);
+    rect.linkOffsetY = -80;
+    rect.isVisible = true;
+
   }
 
   private stopAnimation() {

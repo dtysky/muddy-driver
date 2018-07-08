@@ -100,8 +100,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
 
   private initPlayer() {
     Player.INIT_MATERIAL(this.scene);
-    const p1 = new Player(1, this.container, this.scene, [0, 3, 15]);
-    const p2 = new Player(2, this.container, this.scene, [0, 3, 12]);
+    const p1 = new Player('P1', this.container, this.scene, [0, 3, 15]);
+    const p2 = new Player('P2', this.container, this.scene, [0, 3, 12]);
 
     this.scene.activeCameras.push(p1.followCamera);
     this.scene.activeCameras.push(p2.followCamera);
