@@ -16,11 +16,11 @@ type TRoom = {
 };
 
 class WSMaster {
-  public handleControl: (data: {
+  public controlHandlers: ((data: {
     role: 'wheel' | 'handlebar',
     id: number,
     value: number
-  }) => any = () => {};
+  }) => any)[] = [];
   public handleRooms: (
     data: {
       1: TRoom;
@@ -40,8 +40,8 @@ class WSMaster {
 
     this.ws.onmessage = (res) => {
       const data = JSON.parse(res.data);
-      if (data.type !== 'control') {
-        this.handleControl(data.value);
+      if (data.type === 'control') {
+        this.controlHandlers.forEach(i => i(data.value));
       } else {
         this.handleRooms(data.value);
       }

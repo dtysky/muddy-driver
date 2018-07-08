@@ -23,7 +23,7 @@ interface IStateTypes {
 
 export default class View extends React.Component<IPropTypes, IStateTypes> {
   public state: IStateTypes = {
-    state: 'start'
+    state: 'playing'
   };
 
   private container: React.RefObject<HTMLCanvasElement> = React.createRef();

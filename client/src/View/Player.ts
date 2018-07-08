@@ -85,16 +85,16 @@ export default class Player {
 
     this.followCamera = followCamera;
 
-    wsMaster.handleControl = data => {
+    wsMaster.controlHandlers.push(data => {
       const { role, id, value } = data;
       if (id !== this.id) {
         return;
       }
       if (role === 'wheel') {
-        this.mesh.translate(this.mesh.forward, value / 20, BABYLON.Space.WORLD);
+        this.mesh.translate(this.mesh.forward, value / Math.PI / 200, BABYLON.Space.WORLD);
       } else {
         this.mesh.rotation.y += value;
       }
-    }
+    });
   }
 }
