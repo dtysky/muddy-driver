@@ -12,9 +12,10 @@ import wsMaster from './wsMaster';
 import './base.scss';
 
 interface IPropTypes {
-  state: 'playing' | 'start' | 'end';
+  state: 'playing' | 'step' | 'start' | 'end';
   winner: 'P1' | 'P2';
   handleStart: () => any;
+  handleAllowControl: () => any;
 }
 
 interface IStateTypes {
@@ -28,7 +29,8 @@ interface IStateTypes {
       wheel: boolean;
     }
   };
-  state: 'init' | 'title' | 'playing' | 'start' | 'end';
+  state: 'init' | 'title' | 'playing' | 'step' | 'start' | 'end';
+  step: number;
 }
 
 export default class GUI extends React.Component<IPropTypes, IStateTypes> {
@@ -43,7 +45,8 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
         wheel: false
       }
     },
-    state: 'init'
+    state: 'init',
+    step: 4
   };
 
   private videoElement: React.RefObject<HTMLVideoElement> = React.createRef();
@@ -91,8 +94,8 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
       return;
     }
 
-    if (nextProps.state === 'playing') {
-      this.bgmElement.current.currentTime = 0;
+    if (nextProps.state === 'step') {
+      setTimeout(() => this.goToStep(4), 1500);
     }
 
     this.setState({state: nextProps.state});
@@ -100,6 +103,20 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
 
   public componentWillUnmount() {
     wsMaster.handleRooms = () => {};
+  }
+
+  private goToStep = (step: number) => {
+    if (step === -1) {
+      this.bgmElement.current.pause();
+      this.bgmElement.current.currentTime = 0;
+      this.bgmElement.current.play();
+      this.props.handleAllowControl();
+      return;
+    }
+
+    this.setState({step}, () => {
+      setTimeout(() => this.goToStep(step - 1), 800);
+    });
   }
 
   public render() {
@@ -121,6 +138,10 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
 
     if (this.state.state === 'init' || this.state.state === 'title') {
       return this.renderInit();
+    }
+
+    if (this.state.state === 'step') {
+      return this.renderSteps();
     }
 
     if (this.state.state === 'start') {
@@ -179,6 +200,27 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
     );
   }
 
+  private renderSteps() {
+    return (
+      <div
+        className={'view-gui-steps'}
+      >
+        {
+          [0, 1, 2, 3].map(index =>
+            <img
+              key={index}
+              src={`/assets/${index}.png`}
+              className={cx(
+                'view-gui-steps-step',
+                index === this.state.step && 'view-gui-steps-step-active'
+              )}
+            />
+          )
+        }
+      </div>
+    );
+  }
+
   private renderQrcode(id: number, color: 'r' | 'b') {
     const {rooms} = this.state;
 
@@ -229,6 +271,7 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
           {
             array.map(name => (
               <img
+                key={name}
                 src={`/assets/end-${name}.png`}
               />
             ))

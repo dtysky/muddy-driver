@@ -168,16 +168,52 @@
   }
 }
 
-.view-gui-end {
+@keyframes step-pop {
+  from {
+    transform: translate(-50%, -50%) scale(.6);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.view-gui-steps {
   position: absolute;
   z-index: 3;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
+  background: rgba(0, 0, 0, .4);
+
+  &-step {
+    display: block;
+    position: absolute;
+    opacity: 0;
+    width: 40%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    &-active {
+      opacity: 1;
+      animation: 300ms step-pop ease-out;
+    }
+  }
+}
+
+.view-gui-end {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, .4);
 
   &-result {
     display: flex;
+    justify-content: space-between;
     margin: 0 auto;
 
     >img {
