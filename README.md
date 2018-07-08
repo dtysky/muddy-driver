@@ -2,10 +2,12 @@
 
 A mad game for GIGA Gamejam 2018.
 
+![cover](images/cover.jpg)  
+
 ## Require
 
 One PC.  
-Two players.  
+Four players.  
 Four mobiles.  
 And good LAN.  
 
