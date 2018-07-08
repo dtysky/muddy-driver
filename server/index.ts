@@ -48,9 +48,16 @@ app.ws('/ws-test', (ws, req) => {
   });
 });
 
-let wsMaster: WS = null;
+const wsMaster = {ws: null};
 app.ws('/master', (ws, req) => {
-  wsMaster = ws;
+  ws.on('message', (data: string) => {
+    const {type} = JSON.parse(data);
+
+    if (type === 'init') {
+      wsMaster.ws = ws;
+      wsMaster.ws.send(JSON.stringify({type: 'init'}));
+    }
+  });
 
   ws.on('close', () => {
     delete rooms['0'];
@@ -88,6 +95,19 @@ app.get('/player/join/:id', (req, res) => {
   res.send({code: 0, data: {role}});
 });
 
+function sendRooms() {
+  console.log(rooms);
+
+  try {
+    wsMaster.ws.send(JSON.stringify({type: 'rooms', value: rooms}));
+  } catch (error) {
+    delete rooms['0'];
+    delete rooms['1'];
+
+    console.error(error);
+  }
+}
+
 app.ws('/room/:id/:role', (ws, req) => {
   const role = req.params.role;
   const id = parseInt(req.params.id, 10);
@@ -105,9 +125,13 @@ app.ws('/room/:id/:role', (ws, req) => {
 
       room.alive = room.ready.handlebar && room.ready.wheel;
 
-      wsMaster.send(JSON.stringify({type: 'rooms', value: rooms}));
+      sendRooms();
     } else {
-      wsMaster.send(JSON.stringify({type: 'control', value: {role, id, value: data.value}}));
+      try {
+        wsMaster.ws.send(JSON.stringify({type: 'control', value: {role, id, value: data.value}}));
+      } catch (error) {
+        console.error(error);
+      }
     }
   });
 
@@ -115,14 +139,14 @@ app.ws('/room/:id/:role', (ws, req) => {
     room.ready[role] = false;
     room.alive = false;
 
-    wsMaster.send(JSON.stringify({type: 'rooms', value: rooms}));
+    sendRooms();
   });
 
   ws.on('error', error => {
     room.ready[role] = false;
     room.alive = false;
 
-    wsMaster.send({type: 'rooms', value: rooms});
+    sendRooms();
     console.error(error);
   });
 });

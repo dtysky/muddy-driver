@@ -30,21 +30,35 @@ class WSMaster {
 
   private ws: WebSocket;
 
-  constructor() {
+  public connect() {
+    this.reconnect();
+  }
+
+  private reconnect() {
     const url = config.url;
     this.ws = new WebSocket(`ws://${url}/master`);
 
     this.ws.onopen = () => {
+      console.log('open');
       this.ws.send(JSON.stringify({type: 'init'}));
     };
 
     this.ws.onmessage = (res) => {
       const data = JSON.parse(res.data);
-      if (data.type !== 'control') {
+      console.log(data);
+      if (data.type === 'control') {
         this.handleControl(data.value);
-      } else {
+      } else if ((data.type === 'rooms')) {
         this.handleRooms(data.value);
       }
+    };
+
+    this.ws.onclose = () => {
+      console.log('close');
+    };
+
+    this.ws.onerror = (error) => {
+      console.log(error);
     };
   }
 }

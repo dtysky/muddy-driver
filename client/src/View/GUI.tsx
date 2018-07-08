@@ -8,6 +8,7 @@ import * as React from 'react';
 import * as cx from 'classnames';
 import * as QrCode from 'qrcode.react';
 
+import wsMaster from './wsMaster';
 import './base.scss';
 
 interface IPropTypes {
@@ -41,6 +42,28 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
       }
     }
   };
+
+  public componentDidMount() {
+    wsMaster.handleRooms = data => {
+      if (data[1]) {
+        this.state.rooms[1] = data[1].ready;
+      } else {
+        this.state.rooms[1] = {handlebar: false, wheel: false};
+      }
+
+      if (data[2]) {
+        this.state.rooms[2] = data[2].ready;
+      } else {
+        this.state.rooms[2] = {handlebar: false, wheel: false};
+      }
+
+      this.forceUpdate();
+    };
+  }
+
+  public componentWillUnmount() {
+    wsMaster.handleRooms = () => {};
+  }
 
   public render() {
     if (this.props.state === 'playing') {
@@ -78,7 +101,15 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
         <img
           className={'view-gui-start-confirm'}
           src={'/assets/start.png'}
-          onClick={this.props.handleStart}
+          onClick={() => {
+            const {rooms} = this.state;
+
+            if (!(rooms[1].handlebar && rooms[1].wheel && rooms[2].handlebar && rooms[2].wheel)) {
+              return;
+            }
+
+            this.props.handleStart();
+          }}
         />
       </div>
     );
@@ -96,7 +127,7 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
       >
         <QrCode
           className={'view-gui-start-player-qr'}
-          value={`${location.host}/player/join/${id}`}
+          value={`http://${location.host}/player/${id}`}
           size={240}
           fgColor={'#000'}
           bgColor={'#fff'}
@@ -106,17 +137,20 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
           <div
             className={cx(
               'view-gui-start-player-role',
-              'view-gui-start-player-h',
-              rooms[id].handlebar && 'view-gui-start-player-active'
+              'view-gui-start-player-h'
             )}
-          />
+          >
+            {rooms[id].handlebar && 'H'}
+          </div>
           <div
             className={cx(
               'view-gui-start-player-role',
               'view-gui-start-player-w',
               rooms[id].wheel && 'view-gui-start-player-active'
             )}
-          />
+          >
+            {rooms[id].wheel && 'W'}
+          </div>
         </div>
       </div>
     );

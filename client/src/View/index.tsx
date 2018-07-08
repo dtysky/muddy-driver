@@ -12,6 +12,7 @@ import 'cannon';
 import config from '../config';
 import Player from './Player';
 import GUI from './GUI';
+import wsMaster from './wsMaster';
 
 interface IPropTypes {
 
@@ -49,8 +50,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     this.initCameras();
     // this.initAnimations();
     // this.initSounds();
-    // this.initHUD();
-    // this.initActions();
+
+    wsMaster.connect();
 
     this.engine.runRenderLoop(this.loop);
 
@@ -160,111 +161,6 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   //   scene.animationGroups[0].stop();
   // }
 
-  // private initHUD() {
-  //   const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
-
-  //   this.huds = ['cat_mesh', 'tv', 'star', 'desk', 'tree', 'computer'].map(name => {
-  //     const mesh = this.scene.getMeshByName(`node_${name}`);
-
-  //     const rect = new BABYLON.GUI.Rectangle();
-  //     rect.width = 0.2;
-  //     rect.height = '40px';
-  //     rect.cornerRadius = 4;
-  //     rect.color = 'white';
-  //     rect.thickness = 1;
-  //     rect.background = 'green';
-  //     advancedTexture.addControl(rect);
-
-  //     const label = new BABYLON.GUI.TextBlock();
-  //     label.text = name.split('_')[0];
-  //     rect.addControl(label);
-
-  //     rect.linkWithMesh(mesh);
-  //     rect.linkOffsetY = -150;
-  //     rect.isVisible = false;
-
-  //     return rect;
-  //   });
-  // }
-
-  // private initActions() {
-  //   const {scene, cat} = this;
-
-  //   cat.actionManager = new BABYLON.ActionManager(scene);
-  //   cat.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-  //     BABYLON.ActionManager.OnPickTrigger,
-  //     () => {
-  //       scene.getSoundByName('catVoice').play();
-  //     }
-  //   ));
-  // }
-
-  // private registerActions() {
-  //   const {scene} = this;
-  //   // scene.activeCamera = scene.cameras[1];
-  //   scene.actionManager = new BABYLON.ActionManager(scene);
-
-  //   scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-  //     BABYLON.ActionManager.OnKeyDownTrigger,
-  //     event => {
-  //       switch (event.sourceEvent.key) {
-  //         case 'A':
-  //           this.setState({walking: true, right: true});
-  //           break;
-  //         case 'D':
-  //           this.setState({walking: true, left: true});
-  //           break;
-  //         case 'W':
-  //           this.setState({walking: true, up: true});
-  //           break;
-  //         case 'S':
-  //           this.setState({walking: true, down: true});
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  //     }
-  //   ));
-
-  //   scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-  //     BABYLON.ActionManager.OnKeyUpTrigger,
-  //     event => {
-  //       const {state} = this;
-
-  //       switch (event.sourceEvent.key) {
-  //         case 'A':
-  //           state.right = false;
-  //           break;
-  //         case 'D':
-  //           state.left = false;
-  //           break;
-  //         case 'W':
-  //           state.up = false;
-  //           break;
-  //         case 'S':
-  //           state.down = false;
-  //           break;
-  //         default:
-  //           break;
-  //       }
-
-  //       if (!state.left && !state.right && !state.up && !state.down) {
-  //         state.walking = false;
-  //       }
-
-  //       this.setState(state);
-  //     }
-  //   ));
-  // }
-
-  // private removeActions() {
-  //   this.scene.activeCamera = this.scene.cameras[0];
-
-  //   this.scene.actionManager.actions.map(action => {
-  //     this.scene.actionManager.unregisterAction(action);
-  //   });
-  // }
-
   private update() {
     // this.mainPlayer.translate(this.mainPlayer.forward, -0.1, BABYLON.Space.WORLD);
   }
@@ -283,7 +179,9 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
         />
         <GUI
           state={this.state.state}
-          handleStart={() => {}}
+          handleStart={() => {
+            console.log('haha');
+          }}
         />
       </React.Fragment>
     );
