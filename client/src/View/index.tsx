@@ -24,14 +24,13 @@ interface IStateTypes {
 
 export default class View extends React.Component<IPropTypes, IStateTypes> {
   public state: IStateTypes = {
-    state: 'start'
+    state: 'playing'
   };
 
   private container: React.RefObject<HTMLCanvasElement> = React.createRef();
   private engine: BABYLON.Engine;
   private scene: BABYLON.Scene;
   private groundCollision: BABYLON.Mesh;
-  private players = {};
 
   public async componentDidMount() {
     const canvas = this.container.current;
@@ -101,23 +100,21 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   }
 
   private initPlayer() {
-    this.players[1] = new Player(this.container, this.scene, [0, 3, 15]);
-    this.players[2] = new Player(this.container, this.scene, [0, 3, 12]);
+    Player.INIT_MATERIAL(this.scene);
+    const p1 = new Player('P1', this.container, this.scene, [0, 3, 15]);
+    const p2 = new Player('P2', this.container, this.scene, [0, 3, 12]);
 
-    this.scene.activeCameras.push(this.players[1].followCamera);
-    this.scene.activeCameras.push(this.players[2].followCamera);
+    this.scene.activeCameras.push(p1.followCamera);
+    this.scene.activeCameras.push(p2.followCamera);
 
-    this.players[1].followCamera.viewport = new BABYLON.Viewport(0.501, 0, 0.501, 1.0);
-    this.players[2].followCamera.viewport = new BABYLON.Viewport(0, 0, 0.499, 1.0);
+    p1.followCamera.viewport = new BABYLON.Viewport(0.501, 0, 0.501, 1.0);
+    p2.followCamera.viewport = new BABYLON.Viewport(0, 0, 0.499, 1.0);
   }
 
   private initLights() {
     const {scene} = this;
 
     scene.ambientColor = new BABYLON.Color3(1, 1, 1);
-
-    // const hemisphericLight = new BABYLON.HemisphericLight('hemisphericLight', new BABYLON.Vector3(1, 1, 1), scene);
-    // hemisphericLight.intensity = 2;
   }
 
   private initCameras() {
@@ -180,7 +177,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
         <GUI
           state={this.state.state}
           handleStart={() => {
-            console.log('haha');
+            wsMaster.ready = true;
+            this.setState({state: 'playing'});
           }}
         />
       </React.Fragment>

@@ -16,17 +16,19 @@ type TRoom = {
 };
 
 class WSMaster {
-  public handleControl: (data: {
+  public controlHandlers: ((data: {
     role: 'wheel' | 'handlebar',
     id: number,
     value: number
-  }) => any = () => {};
+  }) => any)[] = [];
   public handleRooms: (
     data: {
       1: TRoom;
       2: TRoom;
     }
   ) => any = () => {};
+  // public ready: boolean = false;
+  public ready: boolean = true;
 
   private ws: WebSocket;
 
@@ -45,9 +47,12 @@ class WSMaster {
 
     this.ws.onmessage = (res) => {
       const data = JSON.parse(res.data);
-      console.log(data);
       if (data.type === 'control') {
-        this.handleControl(data.value);
+        if (!this.ready) {
+          return;
+        }
+
+        this.controlHandlers.forEach(i => i(data.value));
       } else if ((data.type === 'rooms')) {
         this.handleRooms(data.value);
       }
