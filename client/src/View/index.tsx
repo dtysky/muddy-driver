@@ -33,6 +33,13 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private scene: BABYLON.Scene;
   private groundCollision: BABYLON.Mesh;
 
+  public componentDidMount() {
+    wsMaster.connect();
+
+    this.initGL();
+    this.setState({state: 'playing'});
+  }
+
   private async initGL() {
     const canvas = this.container.current;
     canvas.width = window.innerWidth;
@@ -49,10 +56,6 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     this.initLights();
     this.initBarrier();
     this.initCameras();
-    // this.initAnimations();
-    // this.initSounds();
-
-    wsMaster.connect();
 
     this.engine.runRenderLoop(this.loop);
 
@@ -135,7 +138,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private initPlayer() {
     Player.INIT_MATERIAL(this.scene);
     const p1 = new Player('P1', this.container, this.scene, [0, 3, 15]);
-    const p2 = new Player('P2', this.container, this.scene, [-5, 3, 12]);
+    const p2 = new Player('P2', this.container, this.scene, [0, 3, 12]);
 
     this.players.push(p1);
     this.players.push(p2);
@@ -175,28 +178,6 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
       scene
     );
   }
-
-  // private initSounds() {
-  //   const {scene} = this;
-
-  //   const bgm = new BABYLON.Sound('bgm', 'assets/bgm.mp3', scene, null, {
-  //     loop: true, autoplay: false, spatialSound: true, rolloffFactor: .4
-  //   });
-  //   bgm.attachToMesh(scene.getMeshByName('node_star'));
-
-  //   const catVoice = new BABYLON.Sound('catVoice', 'assets/miao.mp3', scene);
-  // }
-
-  // private initAnimations() {
-  //   const {scene} = this;
-
-  //   this.animations = {
-  //     walk: scene.getAnimationGroupByName('walk'),
-  //     hello: scene.getAnimationGroupByName('hello'),
-  //     slap: scene.getAnimationGroupByName('slap')
-  //   };
-  //   scene.animationGroups[0].stop();
-  // }
 
   private update() {
     this.players.forEach(i => i.update());

@@ -100,6 +100,7 @@ export default class Player {
         return;
       }
       if (role === 'wheel') {
+        console.log(value / 20);
         this.mesh.translate(this.mesh.forward, value / 20, BABYLON.Space.WORLD);
         this.status = 'forward';
         this.velocity = value / 20;
