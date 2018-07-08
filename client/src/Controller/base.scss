@@ -1,6 +1,13 @@
+.handlebar {
+  background-image: url('/assets/handlebar.jpg');
+  background-size: 100% 100%;
+  height: 100%;
+}
 .controller {
   height: 100%;
   width: 100%;
+  background-image: url('/assets/pedal.jpg');
+  background-size: 100% 100%;
 }
 
 .left, .right {
@@ -9,11 +16,9 @@
   left: 0;
   top: 0;
   height: 100%;
-  background: rgba(255, 0, 0, 0.5);
 }
 .right {
   left: 50%;
-  background: rgba(0, 255, 0, 0.5);
 }
 
 .btnRun, .btnStop {

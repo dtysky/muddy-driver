@@ -29,7 +29,6 @@ class Controller extends React.Component<IPropTypes, IStateTypes> {
   };
   public async componentDidMount() {
     const roomId = this.props.match.params.roomId;
-    alert(roomId);
     const url = config.url;
     const roomRes = (await axios.get<{
       code: number,
