@@ -26,6 +26,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   public state: IStateTypes = {
     state: 'start'
   };
+  private players = [];
 
   private container: React.RefObject<HTMLCanvasElement> = React.createRef();
   private engine: BABYLON.Engine;
@@ -46,6 +47,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     this.initPhysics();
     this.initPlayer();
     this.initLights();
+    this.initBarrier();
     this.initCameras();
     // this.initAnimations();
     // this.initSounds();
@@ -104,11 +106,39 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     });
   }
 
+  private initBarrier() {
+    const material = new BABYLON.StandardMaterial('barrier', this.scene);
+    material.diffuseTexture = new BABYLON.Texture(`assets/ground.jpg`, this.scene);
+    material.ambientColor = new BABYLON.Color3(1, 1, 1);
+
+    const mesh = BABYLON.MeshBuilder.CreateBox('barrier', {width: 2, height: 1.5, depth: 6}, this.scene);
+    mesh.material = material;
+    mesh.physicsImpostor = new BABYLON.PhysicsImpostor(
+      mesh, BABYLON.PhysicsImpostor.BoxImpostor,
+      {mass: 0, restitution: 0, friction: 1, ignoreParent: true},
+      this.scene
+    );
+    mesh.position.set(-5, 1, 13);
+
+    mesh.physicsImpostor.onCollideEvent = (self, other) => {
+      const obj = other.object as BABYLON.Mesh;
+      if (obj.name === 'P1' || obj.name === 'P2') {
+        console.log(obj.name);
+        wsMaster.ready = false;
+        this.setState({
+          state: 'end'
+        });
+      }
+    };
+  }
+
   private initPlayer() {
     Player.INIT_MATERIAL(this.scene);
     const p1 = new Player('P1', this.container, this.scene, [0, 3, 15]);
-    const p2 = new Player('P2', this.container, this.scene, [0, 3, 12]);
+    const p2 = new Player('P2', this.container, this.scene, [-5, 3, 12]);
 
+    this.players.push(p1);
+    this.players.push(p2);
     this.scene.activeCameras.push(p1.followCamera);
     this.scene.activeCameras.push(p2.followCamera);
 
@@ -169,7 +199,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   // }
 
   private update() {
-    // this.mainPlayer.translate(this.mainPlayer.forward, -0.1, BABYLON.Space.WORLD);
+    this.players.forEach(i => i.update());
   }
 
   private loop = () => {
