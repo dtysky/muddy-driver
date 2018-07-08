@@ -3,4 +3,4 @@
 .vscode
 node_modules
 *.log
-public
+server/dist

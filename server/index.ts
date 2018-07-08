@@ -7,6 +7,7 @@
 import * as Express from 'express';
 import * as ExpressWS from 'express-ws';
 import * as WS from 'ws';
+import * as path from 'path';
 
 const app = Express() as (Express.Express & {
   ws: (string, cb: (ws: WS, req: Express.Request) => any) => any
@@ -150,6 +151,29 @@ app.ws('/room/:id/:role', (ws, req) => {
     console.error(error);
   });
 });
+
+// app.use((req, res, next) => {
+//   console.log(path.extname(req.url));
+//   if (['.js', '.css'].indexOf(path.extname(req.url)) !== 0) {
+//       res.setHeader('Content-Encoding', 'gzip');
+
+//       if (path.extname(req.url) === '.js') {
+//         res.setHeader('Content-Type', 'text/xml');
+//       }
+//   }
+//   next();
+// });
+
+// app.get('/view', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, './dist/index.html'));
+// });
+// app.get('/player/:id', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, './dist/index.html'));
+// });
+// app.get('/assets', Express.static(path.resolve(__dirname, './dist/assets/')));
+// app.get('/', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, './dist/index.html'));
+// });
 
 app.listen(4444, '0.0.0.0', error => {
   if (error) {

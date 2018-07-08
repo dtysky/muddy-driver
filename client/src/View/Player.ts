@@ -93,7 +93,7 @@ export default class Player {
     plane.rotation.x = Math.PI / 4;
 
     const followCamera = new BABYLON.FollowCamera('FollowCam', new BABYLON.Vector3(0, 0, 0), scene);
-    followCamera.radius = -1.414 * 10;
+    followCamera.radius = -1.414 * 8;
     followCamera.heightOffset = 5;
     followCamera.rotationOffset = 0;
     followCamera.maxCameraSpeed = 10;
@@ -110,7 +110,6 @@ export default class Player {
         return;
       }
       if (role === 'wheel') {
-        console.log(value / 20);
         this.mesh.translate(this.mesh.forward, value / 20, BABYLON.Space.WORLD);
         this.status = 'forward';
         this.velocity = value / 20;

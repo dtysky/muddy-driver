@@ -95,6 +95,9 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
     }
 
     if (nextProps.state === 'step') {
+      this.bgmElement.current.pause();
+      this.bgmElement.current.currentTime = 0;
+      this.bgmElement.current.play();
       setTimeout(() => this.goToStep(4), 1500);
     }
 
@@ -107,9 +110,6 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
 
   private goToStep = (step: number) => {
     if (step === -1) {
-      this.bgmElement.current.pause();
-      this.bgmElement.current.currentTime = 0;
-      this.bgmElement.current.play();
       this.props.handleAllowControl();
       return;
     }

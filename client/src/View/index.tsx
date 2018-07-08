@@ -33,13 +33,14 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private engine: BABYLON.Engine;
   private scene: BABYLON.Scene;
   private groundCollision: BABYLON.Mesh;
+  private skyboxes: BABYLON.Mesh[];
 
   public componentDidMount() {
     wsMaster.connect();
 
     this.initGL();
-    // this.setState({state: 'step'});
-    this.setState({state: 'playing'});
+    this.setState({state: 'step'});
+    // this.setState({state: 'playing'});
   }
 
   private async initGL() {
@@ -70,31 +71,32 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private initEnv() {
     const {scene} = this;
 
-    [3].forEach(id => {
-      const skybox = BABYLON.Mesh.CreateBox(`skybox${id}`, 100, scene);
-      const skyboxMaterial = new BABYLON.StandardMaterial(`skybox-material${id}`, scene);
-      skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-      skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-      skyboxMaterial.backFaceCulling = false;
-      skyboxMaterial.disableLighting = true;
-      skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(`assets/bg${id}/`, this.scene);
-      skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-      skybox.material = skyboxMaterial;
-      skybox.position.y = 49.9;
-      skybox.infiniteDistance = true;
-      // skybox.rotation.x = -Math.PI / 4;
-
-      // const skybox = BABYLON.Mesh.CreateCylinder('skybox', 30, 10 + id * 10, 10 + id * 10, 32, 32, scene, false, BABYLON.Mesh.FRONTSIDE);
+    this.skyboxes = [].map(id => {
+      // const skybox = BABYLON.Mesh.CreateBox(`skybox${id}`, 150, scene);
       // const skyboxMaterial = new BABYLON.StandardMaterial(`skybox-material${id}`, scene);
-      // skyboxMaterial.ambientColor = new BABYLON.Color3(1, 1, 1);
-      // skyboxMaterial.diffuseTexture = new BABYLON.Texture(`assets/bg${id}.png`, this.scene);
-      // skyboxMaterial.diffuseTexture.hasAlpha = true;
-      // skyboxMaterial.alphaMode = 0;
+      // skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+      // skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
       // skyboxMaterial.backFaceCulling = false;
       // skyboxMaterial.disableLighting = true;
+      // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(`assets/bg${id}/`, this.scene);
+      // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
       // skybox.material = skyboxMaterial;
-      // skybox.position.y = 14.8;
+      // skybox.position.y = 75.9;
       // skybox.infiniteDistance = true;
+
+      const skybox = BABYLON.Mesh.CreateCylinder('skybox', 30, 80 + id * 10, 80 + id * 10, 32, 32, scene, false, BABYLON.Mesh.BACKSIDE);
+      const skyboxMaterial = new BABYLON.StandardMaterial(`skybox-material${id}`, scene);
+      skyboxMaterial.ambientColor = new BABYLON.Color3(1, 1, 1);
+      skyboxMaterial.diffuseTexture = new BABYLON.Texture(`assets/bg${id}.png`, this.scene);
+      skyboxMaterial.diffuseTexture.hasAlpha = true;
+      skyboxMaterial.alphaMode = 0;
+      skyboxMaterial.backFaceCulling = false;
+      skyboxMaterial.disableLighting = true;
+      skybox.material = skyboxMaterial;
+      // skybox.position.y = 14.86;
+      skybox.infiniteDistance = true;
+
+      return skybox;
     });
 
     return new Promise(resolve => {

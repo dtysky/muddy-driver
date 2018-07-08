@@ -11,8 +11,9 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const outPath = path.resolve(__dirname, '../public');
+const outPath = path.resolve(__dirname, '../server/dist');
 
 module.exports = {
   entry: {
@@ -109,6 +110,9 @@ module.exports = {
       ['*'],
       {root: outPath}
     ),
+    new CopyWebpackPlugin([
+      {from: './assets', to: path.join(outPath, './assets')}
+    ]),
     new ExtractTextPlugin({
       filename: 'assets/main.[hash].css',
       allChunks: true
