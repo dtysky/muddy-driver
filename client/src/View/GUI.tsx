@@ -75,12 +75,11 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
           {this.renderQrcode(1, 'r')}
           {this.renderQrcode(2, 'b')}
         </div>
-        <div
+        <img
           className={'view-gui-start-confirm'}
+          src={'/assets/start.png'}
           onClick={this.props.handleStart}
-        >
-          Start
-        </div>
+        />
       </div>
     );
   }
@@ -103,18 +102,22 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
           bgColor={'#fff'}
           level='M'
         />
-        <div
-          className={cx(
-            'view-gui-start-player-h',
-            rooms[id].handlebar && 'view-gui-start-player-active'
-          )}
-        />
-        <div
-          className={cx(
-            'view-gui-start-player-w',
-            rooms[id].wheel && 'view-gui-start-player-active'
-          )}
-        />
+        <div className={'view-gui-start-player-roles'}>
+          <div
+            className={cx(
+              'view-gui-start-player-role',
+              'view-gui-start-player-h',
+              rooms[id].handlebar && 'view-gui-start-player-active'
+            )}
+          />
+          <div
+            className={cx(
+              'view-gui-start-player-role',
+              'view-gui-start-player-w',
+              rooms[id].wheel && 'view-gui-start-player-active'
+            )}
+          />
+        </div>
       </div>
     );
   }

@@ -62,16 +62,35 @@
   &-players {
     display: flex;
     position: absolute;
-    width: 1;
+    left: 0;
+    right: 0;
+    top: 20%;
   }
 
   &-player {
-    &-qr {
+    width: 50%;
+    text-align: center;
 
+    &-qr {
+      border-width: 8px;
+      border-style: solid;
+    }
+
+    &-roles {
+      display: flex;
+      justify-content: space-between;
+      width: 256px;
+      margin: auto;
+      margin-top: 12px;
+    }
+
+    &-role {
+      width: 80px;
+      height: 80px;
     }
 
     &-w {
-
+      
     }
 
     &-h {
@@ -84,7 +103,12 @@
   }
 
   &-confirm {
-
+    position: absolute;
+    width: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 9%;
+    cursor: pointer;
   }
 
   &-r {
@@ -93,6 +117,14 @@
     &:before, &:after {
       border-color: #f3025b;
     }
+
+    .view-gui-start-player-qr {
+      border-color: #f3025b;
+    }
+
+    .view-gui-start-player-role {
+      background: #831d4a;
+    }
   }
 
   &-b {
@@ -100,6 +132,14 @@
 
     &:before, &:after {
       border-color: #2f81f8;
+    }
+
+    .view-gui-start-player-qr {
+      border-color: #2f81f8;
+    }
+
+    .view-gui-start-player-role {
+      background: #264f95;
     }
   }
 }
