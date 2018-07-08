@@ -80,11 +80,13 @@ export default class Player {
     this.mesh.material.alpha = 0;
     this.mesh.position.set(...position);
     this.mesh.rotation.y = Math.PI / 2;
-    this.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(
-      this.mesh, BABYLON.PhysicsImpostor.BoxImpostor,
-      {mass: 1, restitution: 0, friction: 1, ignoreParent: true},
-      scene
-    );
+    setTimeout(() => {
+      this.mesh.physicsImpostor = new BABYLON.PhysicsImpostor(
+        this.mesh, BABYLON.PhysicsImpostor.BoxImpostor,
+        {mass: 1, restitution: 0, friction: 1, ignoreParent: true},
+        scene
+      );
+    }, 100);
     plane.material = Player.materials.forward[0];
 
     plane.position.set(0, -0.7, 0);
@@ -153,7 +155,7 @@ export default class Player {
     if (this.status === 'forward') {
       if (this.expired < Date.now()) {
         this.plane.material = Player.materials.forward[(animationIndex++) % 4 + (parseInt(this.id.substr(1), 10) - 1) * 4];
-        this.expired = Date.now() + 500 / this.velocity;
+        this.expired = Date.now() + 200 / this.velocity;
       }
     } else {
       this.plane.material = this.turningMaterial;
