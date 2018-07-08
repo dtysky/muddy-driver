@@ -18,7 +18,6 @@ const outPath = path.resolve(__dirname, '../server/dist');
 module.exports = {
   entry: {
     main: path.resolve(__dirname, './src/index.tsx'),
-    'react-packet': ['react', 'react-dom', 'react-router'],
     'babylon': ['babylonjs', 'babylonjs-gui']
   },
 
@@ -111,14 +110,17 @@ module.exports = {
       {root: outPath}
     ),
     new CopyWebpackPlugin([
-      {from: './assets', to: path.join(outPath, './assets')}
+      {
+        from: './client/assets',
+        to: path.join(outPath, './assets')
+      }
     ]),
     new ExtractTextPlugin({
       filename: 'assets/main.[hash].css',
       allChunks: true
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: ['react-packet', 'babylon'],
+      name: ['babylon'],
       minChunks: 2
     }),
     new HtmlWebpackPlugin({
@@ -127,7 +129,7 @@ module.exports = {
     new CompressionWebpackPlugin({
       asset: "[path]",
       algorithm: "gzip",
-      test: /\.js$|\.css$/,
+      test: /\.js$/,
       threshold: 10240,
       minRatio: 0.8
     })

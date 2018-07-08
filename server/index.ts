@@ -152,28 +152,26 @@ app.ws('/room/:id/:role', (ws, req) => {
   });
 });
 
-// app.use((req, res, next) => {
-//   console.log(path.extname(req.url));
-//   if (['.js', '.css'].indexOf(path.extname(req.url)) !== 0) {
-//       res.setHeader('Content-Encoding', 'gzip');
+app.use((req, res, next) => {
+  const ext = path.extname(req.url);
 
-//       if (path.extname(req.url) === '.js') {
-//         res.setHeader('Content-Type', 'text/xml');
-//       }
-//   }
-//   next();
-// });
+  if (ext === '.js') {
+    res.setHeader('Content-Encoding', 'gzip');
+    res.setHeader('Content-Type', 'text/javascript');
+  }
 
-// app.get('/view', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, './dist/index.html'));
-// });
-// app.get('/player/:id', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, './dist/index.html'));
-// });
-// app.get('/assets', Express.static(path.resolve(__dirname, './dist/assets/')));
-// app.get('/', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, './dist/index.html'));
-// });
+  if (ext === '.css') {
+    res.setHeader('Content-Type', 'text/css');
+  }
+
+  next();
+});
+
+app.use('/assets', Express.static(path.resolve(__dirname, './dist/assets/')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './dist/index.html'));
+});
 
 app.listen(4444, '0.0.0.0', error => {
   if (error) {

@@ -33,13 +33,12 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private engine: BABYLON.Engine;
   private scene: BABYLON.Scene;
   private groundCollision: BABYLON.Mesh;
-  private skyboxes: BABYLON.Mesh[];
 
   public componentDidMount() {
     wsMaster.connect();
 
-    this.initGL();
-    this.setState({state: 'step'});
+    // this.initGL();
+    // this.setState({state: 'step'});
     // this.setState({state: 'playing'});
   }
 
@@ -71,19 +70,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   private initEnv() {
     const {scene} = this;
 
-    this.skyboxes = [].map(id => {
-      // const skybox = BABYLON.Mesh.CreateBox(`skybox${id}`, 150, scene);
-      // const skyboxMaterial = new BABYLON.StandardMaterial(`skybox-material${id}`, scene);
-      // skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-      // skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-      // skyboxMaterial.backFaceCulling = false;
-      // skyboxMaterial.disableLighting = true;
-      // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(`assets/bg${id}/`, this.scene);
-      // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-      // skybox.material = skyboxMaterial;
-      // skybox.position.y = 75.9;
-      // skybox.infiniteDistance = true;
-
+    [1, 2, 3].map(id => {
       const skybox = BABYLON.Mesh.CreateCylinder('skybox', 30, 80 + id * 10, 80 + id * 10, 32, 32, scene, false, BABYLON.Mesh.BACKSIDE);
       const skyboxMaterial = new BABYLON.StandardMaterial(`skybox-material${id}`, scene);
       skyboxMaterial.ambientColor = new BABYLON.Color3(1, 1, 1);
@@ -93,7 +80,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
       skyboxMaterial.backFaceCulling = false;
       skyboxMaterial.disableLighting = true;
       skybox.material = skyboxMaterial;
-      // skybox.position.y = 14.86;
+      skybox.position.y = 5;
       skybox.infiniteDistance = true;
 
       return skybox;
@@ -172,10 +159,10 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   }
 
   private initCameras() {
-    const {scene, container} = this;
+    // const {scene, container} = this;
 
-    const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 10, new BABYLON.Vector3(0, 0, 0), scene);
-    camera.attachControl(container.current, true);
+    // const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 10, new BABYLON.Vector3(0, 0, 0), scene);
+    // camera.attachControl(container.current, true);
 
     // scene.activeCamera = camera;
   }

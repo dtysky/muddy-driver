@@ -6,7 +6,7 @@
  */
 
 const config = {
-  url: '192.168.43.102:4444'
+  url: '192.168.50.177:4444'
 };
 
 export default config;

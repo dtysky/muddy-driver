@@ -82,6 +82,10 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
       // stop
       this.setState({state: 'start'});
     });
+
+    this.videoElement.current.addEventListener('canplaythrough', () => {
+      this.videoElement.current.play();
+    });
   }
 
   public componentWillReceiveProps(nextProps: IPropTypes) {
