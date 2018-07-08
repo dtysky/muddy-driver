@@ -114,14 +114,14 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
     material.diffuseTexture = new BABYLON.Texture(`assets/ground.jpg`, this.scene);
     material.ambientColor = new BABYLON.Color3(1, 1, 1);
 
-    const mesh = BABYLON.MeshBuilder.CreateBox('barrier', {width: 2, height: 1.5, depth: 6}, this.scene);
+    const mesh = BABYLON.MeshBuilder.CreateBox('barrier', {width: 2, height: 1.5, depth: 8}, this.scene);
     mesh.material = material;
     mesh.physicsImpostor = new BABYLON.PhysicsImpostor(
       mesh, BABYLON.PhysicsImpostor.BoxImpostor,
       {mass: 0, restitution: 0, friction: 1, ignoreParent: true},
       this.scene
     );
-    mesh.position.set(-5, 1, 13);
+    mesh.position.set(-7, 1, 17);
 
     mesh.physicsImpostor.onCollideEvent = (self, other) => {
       const obj = other.object as BABYLON.Mesh;
@@ -138,8 +138,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
 
   private initPlayer() {
     Player.INIT_MATERIAL(this.scene);
-    const p1 = new Player('P1', this.container, this.scene, [0, 3, 15]);
-    const p2 = new Player('P2', this.container, this.scene, [0, 3, 12]);
+    const p1 = new Player('P1', this.container, this.scene, [0, 3, 19]);
+    const p2 = new Player('P2', this.container, this.scene, [0, 3, 15]);
 
     this.players.push(p1);
     this.players.push(p2);
@@ -152,7 +152,6 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
 
   private initLights() {
     const {scene} = this;
-
     scene.ambientColor = new BABYLON.Color3(1, 1, 1);
     // const hemisphericLight =  new BABYLON.HemisphericLight('directionalLight', new BABYLON.Vector3(1, 1, 1), scene);
     const directionalLight =  new BABYLON.DirectionalLight('directionalLight', new BABYLON.Vector3(-2, -2, 1), scene);
