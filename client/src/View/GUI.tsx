@@ -13,6 +13,7 @@ import './base.scss';
 
 interface IPropTypes {
   state: 'playing' | 'start' | 'end';
+  winner: 'P1' | 'P2';
   handleStart: () => any;
 }
 
@@ -81,6 +82,10 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
   }
 
   public componentWillReceiveProps(nextProps: IPropTypes) {
+    if (nextProps.state === this.props.state) {
+      return;
+    }
+
     if (nextProps.state === 'start') {
       this.setState({state: 'init'});
       return;
@@ -216,9 +221,26 @@ export default class GUI extends React.Component<IPropTypes, IStateTypes> {
   }
 
   private renderEnd() {
+    const array = this.props.winner === 'P1' ? ['win', 'lose'] : ['lose', 'win'];
+
     return (
       <div className={'view-gui-end'}>
-
+        <div className={'view-gui-end-result'}>
+          {
+            array.map(name => (
+              <img
+                src={`/assets/end-${name}.png`}
+              />
+            ))
+          }
+        </div>
+        <img
+          src={'/assets/end-restart.png'}
+          className={cx('view-gui-end-restart')}
+          onClick={() => {
+            location.href = location.href;
+          }}
+        />
       </div>
     );
   }

@@ -9,7 +9,6 @@ import * as BABYLON from 'babylonjs';
 import 'babylonjs-gui';
 import 'cannon';
 
-import config from '../config';
 import Player from './Player';
 import GUI from './GUI';
 import wsMaster from './wsMaster';
@@ -20,11 +19,13 @@ interface IPropTypes {
 
 interface IStateTypes {
   state: 'start' | 'playing' | 'end';
+  winner: 'P1' | 'P2';
 }
 
 export default class View extends React.Component<IPropTypes, IStateTypes> {
   public state: IStateTypes = {
-    state: 'start'
+    state: 'start',
+    winner: null
   };
   private players = [];
 
@@ -36,8 +37,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
   public componentDidMount() {
     wsMaster.connect();
 
-    this.initGL();
-    this.setState({state: 'playing'});
+    // this.setState({state: 'end'});
   }
 
   private async initGL() {
@@ -129,7 +129,8 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
         console.log(obj.name);
         wsMaster.ready = false;
         this.setState({
-          state: 'end'
+          state: 'end',
+          winner: obj.name
         });
       }
     };
@@ -202,6 +203,7 @@ export default class View extends React.Component<IPropTypes, IStateTypes> {
             await this.initGL();
             this.setState({state: 'playing'});
           }}
+          winner={this.state.winner}
         />
       </React.Fragment>
     );

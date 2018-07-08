@@ -5,7 +5,7 @@
  * @Date   : 2018-7-8 00:15:02
  */
 .view-gui {
-  
+
 }
 
 .view-gui-init {
@@ -169,5 +169,27 @@
 }
 
 .view-gui-end {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 
+  &-result {
+    display: flex;
+    margin: 0 auto;
+
+    >img {
+      display: block;
+      width: 600px;
+      height: 630px;
+    }
+  }
+
+  &-restart {
+    display: block;
+    width: 300px;
+    margin: auto;
+  }
 }
